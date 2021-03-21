@@ -1,6 +1,3 @@
-const pages = document.querySelectorAll(".page");
-
-
 class Router {
 	// Routes Array, valid routes are here, can be regexp or a string
 	/**
@@ -8,19 +5,20 @@ class Router {
 	 */
 	routes = [];
 
-	// Whether it uses the routers back page or a hash
+	/**
+	 * Holds the mode of the router
+	 * 
+	 * @interface 'history', 'hash'
+	 * @type {string}
+	 */
 	mode = null;
 
-	// Root URL, change if this is in a sub-page
+	/**
+	 * Root URL, change if this is in a sub-page
+	 * 
+	 * @type {String}
+	 */
 	root = '/';
-
-	// Initialization function
-	// constructor(options) {
-	// 	this.mode = window.history.pushState ? 'history' : 'hash';
-	// 	if (options.mode) this.mode = options.mode;
-	// 	if (options.root) this.root = options.root;
-	// 	this.listen();
-	// }
 
 	/**
 	 * Initialises the Router Object
@@ -36,13 +34,22 @@ class Router {
 		this.listen();
 	}
 
-	// Add a route to the instance
+	/**
+	 * Add a route to the instance
+	 * 
+	 * @param {string} path 
+	 * @param {Function} callback
+	 */
 	add = (path, callback) => {
 		this.routes.push({ path, callback });
 		return this;
 	};
 
-	// remove a path from the instance by name or regexp
+	/**
+	 * remove a path from the instance by name or regexp
+	 * 
+	 * @param {string | RegExp} path 
+	 */
 	remove = path => {
 		for (let i = 0; i < this.routes.length; i += 1) {
 			if (this.routes[i].path === path) {
@@ -53,21 +60,33 @@ class Router {
 		return this;
 	};
 
-	// Clear Routes
+	/**
+	 * Clear Routes
+	 * 
+	 */
 	flush = () => {
 		this.routes = [];
 		return this;
 	};
 
-	// Remove slashes from a route
-	// PARSER Function
+	/**
+	 * Removes Slashes from the path
+	 * This is an internal parser function
+	 * 
+	 * @param {string} path 
+	 * @returns {string}
+	 */
 	clearSlashes = path =>
 		path
 			.toString()
 			.replace(/\/$/, '')
 			.replace(/^\//, '');
 
-	// get URL fragment, (the "about" or  "")
+	/**
+	 * get URL fragment, (the "about" or  "")
+	 * 
+	 * @returns {string}
+	 */
 	getFragment = () => {
 		let fragment = '';
 		if (this.mode === 'history') {
@@ -81,7 +100,11 @@ class Router {
 		return this.clearSlashes(fragment);
 	};
 
-	// Change Page
+	/**
+	 * Change Page
+	 * 
+	 * @param {string} path 
+	 */
 	navigate = (path = '') => {
 		if (this.mode === 'history') {
 			window.history.pushState(null, null, this.root + this.clearSlashes(path));
@@ -91,13 +114,19 @@ class Router {
 		return this;
 	};
 
-	// Listen for changes to URL to navigate between pages by URL change
+	/**
+	 * Listen for changes to URL to navigate between pages by URL change
+	 */
 	listen = () => {
 		clearInterval(this.interval);
 		this.interval = setInterval(this.interval, 50);
 	};
 
-	// Used by listen to actually do its shitty job.
+	/**
+	 * Used by listen to actually do its shitty job.
+	 * 
+	 * @returns {void}
+	 */
 	interval = () => {
 		if (this.current === this.getFragment()) return;
 		this.current = this.getFragment();
@@ -114,7 +143,11 @@ class Router {
 	};
 }
 
-// Navigate between pages
+/**
+ * Navigate between pages
+ * 
+ * @param {string} pathClass 
+ */
 function navigateClass(pathClass) {
 	console.log(pathClass);
 	// console.log(wrapper);
@@ -131,12 +164,22 @@ function navigateClass(pathClass) {
 			val.classList.toggle("animate", false);
 		}
 	});
+
+	activeRouteClass = pathClass;
 }
 
-// create router instance
-const router = new Router({ mode: 'hash', root: '/' },
-	[
-		{ path: /about/, callback: () => navigateClass('about') },
-		{ path: '', callback: () => navigateClass('home') }
-	]
-);
+var activeRouteClass, router, pages;
+
+/**
+ * Initialises everything once the DOM is loaded, this prevents pages from missing in the javascript, also adds more security.
+ */
+document.addEventListener('DOMContentLoaded', () => {
+	pages = document.querySelectorAll(".page");
+	// create router instance
+	router = new Router({ mode: 'hash', root: '/' },
+		[
+			{ path: /about/, callback: () => navigateClass('about') },
+			{ path: '', callback: () => navigateClass('home') }
+		]
+	);
+});

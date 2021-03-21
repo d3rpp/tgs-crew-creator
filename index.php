@@ -10,10 +10,21 @@
 
 	<script src="./app.js" defer></script>
 
-	<title>Document</title>
+	<title>TGS Rowing Club Crew Creator</title>
 </head>
 
 <body>
+	<main>
+		<div class="page member-editor">
+			<?php include "./pages/member-editor.php" ?>
+		</div>
+		<div class="page crew-editor">
+			<?php include "./pages/crew-editor.php" ?>
+		</div>
+		<div class="page crew-display">
+			<?php include "./pages/crew-display.php" ?>
+		</div>
+	</main>
 
 </body>
 

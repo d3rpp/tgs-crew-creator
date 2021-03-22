@@ -1,15 +1,17 @@
+// console.log = undefined;
+
+
 class Router {
 	// Routes Array, valid routes are here, can be regexp or a string
 	/**
-	 * @type {Route[]}
+	 * @type {[]}
 	 */
 	routes = [];
 
 	/**
 	 * Holds the mode of the router
 	 * 
-	 * @interface 'history', 'hash'
-	 * @type {string}
+	 * @type {String}
 	 */
 	mode = null;
 
@@ -152,16 +154,23 @@ function navigateClass(pathClass) {
 	console.log(pathClass);
 	// console.log(wrapper);
 	pages.forEach((val) => {
-		console.log(val.tagName);
+		// console.log(val.tagName);
 		// Check for invalid tags, you can use <div> <section> and <main>
 		// it just needs to be a child of the router-main element
 		if (!(val.tagName == 'DIV' || val.tagName == 'SECTION' || val.tagName == 'MAIN')) return;
 		if (val.classList.contains(pathClass)) {
 			val.classList.toggle("hidden", false);
-			val.classList.toggle("animate", true);
+			// val.classList.toggle("animate", true);
+
+			// $(val).fadeIn(300);
+			// val.fadeIn(300);
+
+			// setTimeout(() => {
+			// val.classList.toggle("animate", false);
+			// }, 300);
 		} else {
 			val.classList.toggle("hidden", true);
-			val.classList.toggle("animate", false);
+			// val.classList.toggle("animate", false);
 		}
 	});
 
@@ -172,14 +181,18 @@ var activeRouteClass, router, pages;
 
 /**
  * Initialises everything once the DOM is loaded, this prevents pages from missing in the javascript, also adds more security.
+ * 
+ * kind of like the if __name__ == '__main__' of python
  */
 document.addEventListener('DOMContentLoaded', () => {
 	pages = document.querySelectorAll(".page");
 	// create router instance
 	router = new Router({ mode: 'hash', root: '/' },
 		[
-			{ path: /about/, callback: () => navigateClass('about') },
-			{ path: '', callback: () => navigateClass('home') }
+			{ path: 'member-editor', callback: () => navigateClass('member-editor') },
+			{ path: 'crew-editor', callback: () => navigateClass('crew-editor') },
+			{ path: 'crew-display', callback: () => navigateClass('crew-display') },
+			{ path: '', callback: () => navigateClass('member-editor') }
 		]
 	);
 });

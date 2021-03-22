@@ -1,0 +1,124 @@
+// @use "_crew-editor.scss";
+
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+
+	font-family: sans-serif;
+}
+
+$header-left-padding: 16px;
+
+body {
+	overflow: hidden;
+
+	width: 100vw;
+	height: 100vh;
+
+	display: flex;
+	flex-direction: column;
+
+	header {
+		display: grid;
+		grid-template-rows: 1fr;
+		grid-template-columns: 1fr 1fr;
+
+		align-items: center;
+
+		.left {
+			padding-left: $header-left-padding;
+			font-size: 18px;
+		}
+
+		.right {
+			ul {
+				height: 56px;
+				display: flex;
+				flex-direction: row;
+
+				justify-content: space-evenly;
+				align-items: center;
+
+				list-style: none;
+
+				li {
+					height: 56px;
+					width: 100%;
+
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+
+					text-align: center;
+					align-items: center;
+
+					transition: color 100ms ease-out, background-color 200ms ease;
+
+					a {
+						display: flex;
+						flex-direction: column;
+						justify-content: center;
+						width: 100%;
+						height: 100%;
+						text-decoration-line: none;
+						color: black;
+					}
+
+					&:hover {
+						background-color: black;
+						a {
+							color: white;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	main {
+		width: 100%;
+		height: 100%;
+
+		.hidden {
+			display: none;
+		}
+
+		:not(.hidden) {
+			display: block;
+		}
+
+		.animate {
+			animation: fadeIn 300ms ease-out;
+		}
+
+		:not(.animate) {
+			animation: none;
+		}
+
+		.crew-editor {
+			@import "./crew-editor";
+		}
+
+		.crew-display {
+			@import "./crew-display";
+		}
+
+		.member-editor {
+			@import "./member-editor";
+		}
+	}
+}
+
+/**
+*	Used to fade pages
+*
+*/
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}

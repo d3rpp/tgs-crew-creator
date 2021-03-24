@@ -1,26 +1,45 @@
 // console.log = undefined;
 
+interface Route {
+	path: string | RegExp;
+	callback: Function;
+}
+
+type RouterMode =
+	'hash' |
+	'history';
 
 class Router {
 	// Routes Array, valid routes are here, can be regexp or a string
 	/**
 	 * @type {[]}
 	 */
-	routes = [];
+	routes: Route[] = [];
 
 	/**
 	 * Holds the mode of the router
 	 * 
 	 * @type {String}
 	 */
-	mode = null;
+	mode: RouterMode = null;
 
 	/**
 	 * Root URL, change if this is in a sub-page
 	 * 
 	 * @type {String}
 	 */
-	root = '/';
+	root: string = '/';
+
+	/**
+	 * holds the handle on the interval as a number
+	 */
+	globalInterval: number | undefined;
+
+
+	/**
+	 * Holds the Current path in memory
+	 */
+	current: string;
 
 	/**
 	 * Initialises the Router Object
@@ -29,7 +48,7 @@ class Router {
 	 * @param {Route[]} routes 
 	 */
 	constructor(options, routes) {
-		this.mode = window.history.pushState ? 'history' : 'hash';
+		this.mode = window.history.pushState ? "history" : "hash";
 		if (options.mode) this.mode = options.mode;
 		if (options.root) this.root = options.root;
 		if (routes) this.routes = routes;
@@ -89,9 +108,9 @@ class Router {
 	 * 
 	 * @returns {string}
 	 */
-	getFragment = () => {
+	getFragment = (): string => {
 		let fragment = '';
-		if (this.mode === 'history') {
+		if (this.mode === "history") {
 			fragment = this.clearSlashes(decodeURI(window.location.pathname + window.location.search));
 			fragment = fragment.replace(/\?(.*)$/, '');
 			fragment = this.root !== '/' ? fragment.replace(this.root, '') : fragment;
@@ -108,7 +127,7 @@ class Router {
 	 * @param {string} path 
 	 */
 	navigate = (path = '') => {
-		if (this.mode === 'history') {
+		if (this.mode === "history") {
 			window.history.pushState(null, null, this.root + this.clearSlashes(path));
 		} else {
 			window.location.href = `${window.location.href.replace(/#(.*)$/, '')}#${path}`;
@@ -120,8 +139,8 @@ class Router {
 	 * Listen for changes to URL to navigate between pages by URL change
 	 */
 	listen = () => {
-		clearInterval(this.interval);
-		this.interval = setInterval(this.interval, 50);
+		clearInterval(this.globalInterval);
+		this.globalInterval = setInterval(this.interval, 50);
 	};
 
 	/**
@@ -150,34 +169,21 @@ class Router {
  * 
  * @param {string} pathClass 
  */
-function navigateClass(pathClass) {
-	console.log(pathClass);
-	// console.log(wrapper);
-	pages.forEach((val) => {
-		// console.log(val.tagName);
-		// Check for invalid tags, you can use <div> <section> and <main>
-		// it just needs to be a child of the router-main element
-		if (!(val.tagName == 'DIV' || val.tagName == 'SECTION' || val.tagName == 'MAIN')) return;
-		if (val.classList.contains(pathClass)) {
-			val.classList.toggle("hidden", false);
-			// val.classList.toggle("animate", true);
+function navigateClass(pathClass: string, wrapper: HTMLElement, indicator: HTMLElement) {
+	if (pathClass == activeRouteClass) return;
 
-			// $(val).fadeIn(300);
-			// val.fadeIn(300);
+	wrapper.classList.remove("member-editor", "crew-editor", "crew-display");
+	indicator.classList.remove("member-editor", "crew-editor", "crew-display");
 
-			// setTimeout(() => {
-			// val.classList.toggle("animate", false);
-			// }, 300);
-		} else {
-			val.classList.toggle("hidden", true);
-			// val.classList.toggle("animate", false);
-		}
-	});
+	wrapper.classList.add(pathClass);
+	indicator.classList.add(pathClass);
 
 	activeRouteClass = pathClass;
 }
 
-var activeRouteClass, router, pages;
+var activeRouteClass, router;
+
+
 
 /**
  * Initialises everything once the DOM is loaded, this prevents pages from missing in the javascript, also adds more security.
@@ -185,14 +191,17 @@ var activeRouteClass, router, pages;
  * kind of like the if __name__ == '__main__' of python
  */
 document.addEventListener('DOMContentLoaded', () => {
-	pages = document.querySelectorAll(".page");
+
+	const main: HTMLElement = document.querySelector("main");
+	const indicator: HTMLElement = document.querySelector("span#indicator");
+
 	// create router instance
 	router = new Router({ mode: 'hash', root: '/' },
 		[
-			{ path: 'member-editor', callback: () => navigateClass('member-editor') },
-			{ path: 'crew-editor', callback: () => navigateClass('crew-editor') },
-			{ path: 'crew-display', callback: () => navigateClass('crew-display') },
-			{ path: '', callback: () => navigateClass('member-editor') }
+			{ path: 'member-editor', callback: () => navigateClass('member-editor', main, indicator) },
+			{ path: 'crew-editor', callback: () => navigateClass('crew-editor', main, indicator) },
+			{ path: 'crew-display', callback: () => navigateClass('crew-display', main, indicator) },
+			{ path: '', callback: () => navigateClass('member-editor', main, indicator) }
 		]
 	);
 });

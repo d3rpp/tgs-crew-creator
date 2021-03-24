@@ -11,7 +11,7 @@
 
 	<link rel="stylesheet" href="style/style.css">
 
-	<script src="./app.js"></script>
+	<script src="./script/app.js"></script>
 
 	<title>TGS Rowing Club Crew Creator</title>
 </head>
@@ -39,18 +39,20 @@
 					</a>
 				</li>
 			</ul>
+
+			<span id="indicator"></span>
 		</div>
 	</header>
 	<main>
-		<div class="page member-editor">
+		<section class="page member-editor">
 			<?php include "./pages/member-editor.php" ?>
-		</div>
-		<div class="page crew-editor hidden">
+		</section>
+		<section class="page crew-editor">
 			<?php include "./pages/crew-editor.php" ?>
-		</div>
-		<div class="page crew-display hidden">
+		</section>
+		<section class="page crew-display">
 			<?php include "./pages/crew-display.php" ?>
-		</div>
+		</section>
 	</main>
 </body>
 

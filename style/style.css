@@ -1,8 +1,7 @@
 * {
   margin: 0;
   padding: 0;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
+  box-sizing: border-box;
   font-family: sans-serif;
 }
 
@@ -10,128 +9,115 @@ body {
   overflow: hidden;
   width: 100vw;
   height: 100vh;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
+  flex-direction: column;
 }
-
 body header {
-  display: -ms-grid;
+  background-color: #002a37;
   display: grid;
-  -ms-grid-rows: 1fr;
-      grid-template-rows: 1fr;
-  -ms-grid-columns: 1fr 1fr;
-      grid-template-columns: 1fr 1fr;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr 1fr;
+  box-shadow: black 0px 3px 10px;
+  color: white;
+  z-index: 100;
+  height: 56px;
+  align-items: center;
 }
-
 body header .left {
   padding-left: 16px;
   font-size: 18px;
 }
-
+body header .right span {
+  transition: left 300ms ease;
+  height: 3px;
+  width: calc(50% / 3);
+  position: absolute;
+  background-color: white;
+  z-index: 1000;
+  top: 53px;
+  left: 50vw;
+}
+body header .right span.member-editor {
+  left: 50vw;
+}
+body header .right span.crew-editor {
+  left: calc(50vw + calc(calc(50% / 3) * 1));
+}
+body header .right span.crew-display {
+  left: calc(50vw + calc(calc(50% / 3) * 2));
+}
 body header .right ul {
   height: 56px;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -webkit-box-pack: space-evenly;
-      -ms-flex-pack: space-evenly;
-          justify-content: space-evenly;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
   list-style: none;
 }
-
 body header .right ul li {
   height: 56px;
   width: 100%;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  flex-direction: column;
+  justify-content: center;
   text-align: center;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-transition: color 100ms ease-out, background-color 200ms ease;
+  align-items: center;
   transition: color 100ms ease-out, background-color 200ms ease;
+  color: white;
 }
-
 body header .right ul li a {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  flex-direction: column;
+  justify-content: center;
   width: 100%;
   height: 100%;
-  -webkit-text-decoration-line: none;
-          text-decoration-line: none;
-  color: black;
+  text-decoration-line: none;
+  color: white;
 }
-
 body header .right ul li:hover {
   background-color: black;
 }
-
 body header .right ul li:hover a {
   color: white;
 }
-
 body main {
   width: 100%;
   height: 100%;
+  padding-top: 56px;
+  display: grid;
+  grid-template-columns: repeat(3, 100vw);
+  grid-template-rows: calc(100vh - var(--header-height));
+  transition: left 300ms ease;
+  position: fixed;
+  top: 0;
+  left: 0;
 }
-
-body main .hidden {
-  display: none;
+body main.member-editor {
+  left: 0vw;
 }
-
-body main :not(.hidden) {
-  display: block;
+body main.crew-editor {
+  left: -100vw;
 }
-
-body main .animate {
-  -webkit-animation: fadeIn 300ms ease-out;
-          animation: fadeIn 300ms ease-out;
+body main.crew-display {
+  left: -200vw;
 }
-
-body main :not(.animate) {
-  -webkit-animation: none;
-          animation: none;
+body main section {
+  width: 100vw !important;
+  height: calc(100vh - var(--header-height));
+  background-color: #002a37;
+  overflow-x: hidden;
+  overflow-y: auto;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-
 body main .crew-editor h1 {
   font-weight: 100;
 }
-
 body main .crew-display h1 {
   color: blue;
 }
-
 body main .member-editor h1 {
   font-family: cursive;
 }
@@ -140,14 +126,6 @@ body main .member-editor h1 {
 *	Used to fade pages
 *
 */
-@-webkit-keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -156,4 +134,5 @@ body main .member-editor h1 {
     opacity: 1;
   }
 }
+
 /*# sourceMappingURL=style.css.map */

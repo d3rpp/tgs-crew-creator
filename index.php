@@ -7,13 +7,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<!-- JQuery -->
-	<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+	<!-- <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script> -->
 
 	<link rel="stylesheet" href="style/style.css">
 
 	<script src="./app.js"></script>
 
-	<!-- <title>TGS Rowing Club Crew Creator</title> -->
+	<title>TGS Rowing Club Crew Creator</title>
 </head>
 
 <body>
@@ -52,7 +52,6 @@
 			<?php include "./pages/crew-display.php" ?>
 		</div>
 	</main>
-
 </body>
 
 </html>

@@ -1,45 +1,15 @@
-// console.log = undefined;
-var Router = /** @class */ (function () {
-    /**
-     * Initialises the Router Object
-     *
-     * @param {Options} options
-     * @param {Route[]} routes
-     */
+"use strict";
+var Router = (function () {
     function Router(options, routes) {
         var _this = this;
-        // Routes Array, valid routes are here, can be regexp or a string
-        /**
-         * @type {[]}
-         */
         this.routes = [];
-        /**
-         * Holds the mode of the router
-         *
-         * @type {String}
-         */
-        this.mode = null;
-        /**
-         * Root URL, change if this is in a sub-page
-         *
-         * @type {String}
-         */
+        this.mode = "hash";
         this.root = '/';
-        /**
-         * Add a route to the instance
-         *
-         * @param {string} path
-         * @param {Function} callback
-         */
+        this.current = "";
         this.add = function (path, callback) {
             _this.routes.push({ path: path, callback: callback });
             return _this;
         };
-        /**
-         * remove a path from the instance by name or regexp
-         *
-         * @param {string | RegExp} path
-         */
         this.remove = function (path) {
             for (var i = 0; i < _this.routes.length; i += 1) {
                 if (_this.routes[i].path === path) {
@@ -49,32 +19,16 @@ var Router = /** @class */ (function () {
             }
             return _this;
         };
-        /**
-         * Clear Routes
-         *
-         */
         this.flush = function () {
             _this.routes = [];
             return _this;
         };
-        /**
-         * Removes Slashes from the path
-         * This is an internal parser function
-         *
-         * @param {string} path
-         * @returns {string}
-         */
         this.clearSlashes = function (path) {
             return path
                 .toString()
                 .replace(/\/$/, '')
                 .replace(/^\//, '');
         };
-        /**
-         * get URL fragment, (the "about" or  "")
-         *
-         * @returns {string}
-         */
         this.getFragment = function () {
             var fragment = '';
             if (_this.mode === "history") {
@@ -88,33 +42,20 @@ var Router = /** @class */ (function () {
             }
             return _this.clearSlashes(fragment);
         };
-        /**
-         * Change Page
-         *
-         * @param {string} path
-         */
         this.navigate = function (path) {
             if (path === void 0) { path = ''; }
             if (_this.mode === "history") {
-                window.history.pushState(null, null, _this.root + _this.clearSlashes(path));
+                window.history.pushState(null, "", _this.root + _this.clearSlashes(path));
             }
             else {
                 window.location.href = window.location.href.replace(/#(.*)$/, '') + "#" + path;
             }
             return _this;
         };
-        /**
-         * Listen for changes to URL to navigate between pages by URL change
-         */
         this.listen = function () {
             clearInterval(_this.globalInterval);
             _this.globalInterval = setInterval(_this.interval, 50);
         };
-        /**
-         * Used by listen to actually do its shitty job.
-         *
-         * @returns {void}
-         */
         this.interval = function () {
             if (_this.current === _this.getFragment())
                 return;
@@ -129,7 +70,6 @@ var Router = /** @class */ (function () {
                 return false;
             });
         };
-        this.mode = window.history.pushState ? "history" : "hash";
         if (options.mode)
             this.mode = options.mode;
         if (options.root)
@@ -140,11 +80,6 @@ var Router = /** @class */ (function () {
     }
     return Router;
 }());
-/**
- * Navigate between pages
- *
- * @param {string} pathClass
- */
 function navigateClass(pathClass, wrapper, indicator) {
     if (pathClass == activeRouteClass)
         return;
@@ -155,19 +90,19 @@ function navigateClass(pathClass, wrapper, indicator) {
     activeRouteClass = pathClass;
 }
 var activeRouteClass, router;
-/**
- * Initialises everything once the DOM is loaded, this prevents pages from missing in the javascript, also adds more security.
- *
- * kind of like the if __name__ == '__main__' of python
- */
-document.addEventListener('DOMContentLoaded', function () {
+var init = function () {
     var main = document.querySelector("main");
     var indicator = document.querySelector("span#indicator");
-    // create router instance
+    if (main == null || indicator == null) {
+        console.error("BROKEN MOTHER FUCKER");
+        return;
+    }
     router = new Router({ mode: 'hash', root: '/' }, [
         { path: 'member-editor', callback: function () { return navigateClass('member-editor', main, indicator); } },
         { path: 'crew-editor', callback: function () { return navigateClass('crew-editor', main, indicator); } },
         { path: 'crew-display', callback: function () { return navigateClass('crew-display', main, indicator); } },
         { path: '', callback: function () { return navigateClass('member-editor', main, indicator); } }
     ]);
-});
+};
+document.addEventListener('DOMContentLoaded', init);
+//# sourceMappingURL=app.js.map

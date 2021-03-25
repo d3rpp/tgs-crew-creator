@@ -1,0 +1,1 @@
+const MemberEditorGlobalDoc = document.querySelector("section.member-editor")!;

@@ -1,5 +1,3 @@
-// console.log = undefined;
-
 interface Route {
 	path: string | RegExp;
 	callback: Function;
@@ -9,24 +7,27 @@ type RouterMode =
 	'hash' |
 	'history';
 
+interface RouterOptions {
+	mode: RouterMode;
+	root: string;
+}
+
 class Router {
-	// Routes Array, valid routes are here, can be regexp or a string
 	/**
-	 * @type {[]}
+	 * 	Routes Array, valid routes are here, can be regexp or a string
+	 *
 	 */
 	routes: Route[] = [];
 
 	/**
 	 * Holds the mode of the router
 	 * 
-	 * @type {String}
 	 */
-	mode: RouterMode = null;
+	mode: RouterMode = "hash";
 
 	/**
 	 * Root URL, change if this is in a sub-page
 	 * 
-	 * @type {String}
 	 */
 	root: string = '/';
 
@@ -39,16 +40,13 @@ class Router {
 	/**
 	 * Holds the Current path in memory
 	 */
-	current: string;
+	current: string = "";
 
 	/**
 	 * Initialises the Router Object
-	 * 
-	 * @param {Options} options 
-	 * @param {Route[]} routes 
 	 */
-	constructor(options, routes) {
-		this.mode = window.history.pushState ? "history" : "hash";
+	constructor(options: RouterOptions, routes: Route[]) {
+		// this.mode = window.history.pushState ? "history" : "hash";
 		if (options.mode) this.mode = options.mode;
 		if (options.root) this.root = options.root;
 		if (routes) this.routes = routes;
@@ -57,21 +55,16 @@ class Router {
 
 	/**
 	 * Add a route to the instance
-	 * 
-	 * @param {string} path 
-	 * @param {Function} callback
 	 */
-	add = (path, callback) => {
+	add = (path: string | RegExp, callback: Function) => {
 		this.routes.push({ path, callback });
 		return this;
 	};
 
 	/**
 	 * remove a path from the instance by name or regexp
-	 * 
-	 * @param {string | RegExp} path 
 	 */
-	remove = path => {
+	remove = (path: string | RegExp) => {
 		for (let i = 0; i < this.routes.length; i += 1) {
 			if (this.routes[i].path === path) {
 				this.routes.slice(i, 1);
@@ -83,7 +76,6 @@ class Router {
 
 	/**
 	 * Clear Routes
-	 * 
 	 */
 	flush = () => {
 		this.routes = [];
@@ -93,11 +85,8 @@ class Router {
 	/**
 	 * Removes Slashes from the path
 	 * This is an internal parser function
-	 * 
-	 * @param {string} path 
-	 * @returns {string}
 	 */
-	clearSlashes = path =>
+	clearSlashes = (path: string) =>
 		path
 			.toString()
 			.replace(/\/$/, '')
@@ -105,8 +94,6 @@ class Router {
 
 	/**
 	 * get URL fragment, (the "about" or  "")
-	 * 
-	 * @returns {string}
 	 */
 	getFragment = (): string => {
 		let fragment = '';
@@ -123,12 +110,10 @@ class Router {
 
 	/**
 	 * Change Page
-	 * 
-	 * @param {string} path 
 	 */
 	navigate = (path = '') => {
 		if (this.mode === "history") {
-			window.history.pushState(null, null, this.root + this.clearSlashes(path));
+			window.history.pushState(null, "", this.root + this.clearSlashes(path));
 		} else {
 			window.location.href = `${window.location.href.replace(/#(.*)$/, '')}#${path}`;
 		}
@@ -144,9 +129,7 @@ class Router {
 	};
 
 	/**
-	 * Used by listen to actually do its shitty job.
-	 * 
-	 * @returns {void}
+	 * Used by listen to actually do its job.
 	 */
 	interval = () => {
 		if (this.current === this.getFragment()) return;
@@ -166,8 +149,6 @@ class Router {
 
 /**
  * Navigate between pages
- * 
- * @param {string} pathClass 
  */
 function navigateClass(pathClass: string, wrapper: HTMLElement, indicator: HTMLElement) {
 	if (pathClass == activeRouteClass) return;
@@ -181,19 +162,21 @@ function navigateClass(pathClass: string, wrapper: HTMLElement, indicator: HTMLE
 	activeRouteClass = pathClass;
 }
 
-var activeRouteClass, router;
+var activeRouteClass: string, router: Router;
 
 
 
 /**
- * Initialises everything once the DOM is loaded, this prevents pages from missing in the javascript, also adds more security.
- * 
- * kind of like the if __name__ == '__main__' of python
+ * Initialises everything
  */
-document.addEventListener('DOMContentLoaded', () => {
+const init = () => {
+	const main: HTMLElement | null = document.querySelector("main");
+	const indicator: HTMLElement | null = document.querySelector("span#indicator");
 
-	const main: HTMLElement = document.querySelector("main");
-	const indicator: HTMLElement = document.querySelector("span#indicator");
+	if (main == null || indicator == null) {
+		console.error("BROKEN MOTHER FUCKER")
+		return;
+	}
 
 	// create router instance
 	router = new Router({ mode: 'hash', root: '/' },
@@ -204,4 +187,10 @@ document.addEventListener('DOMContentLoaded', () => {
 			{ path: '', callback: () => navigateClass('member-editor', main, indicator) }
 		]
 	);
-});
+
+}
+
+/**
+ * Starting Point of javascript program
+ */
+document.addEventListener('DOMContentLoaded', init);

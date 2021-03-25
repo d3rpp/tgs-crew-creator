@@ -1,0 +1,1 @@
+const CrewEditorGlobalDoc = document.querySelector("section.crew-editor")!;

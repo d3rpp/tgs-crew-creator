@@ -10,6 +10,7 @@
 	<!-- <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script> -->
 
 	<link rel="stylesheet" href="style/style.css">
+	<script crossorigin="anonymous" src="https://polyfill.io/v3/polyfill.js?features=Map%2CObject.defineProperties%2CObject.defineProperty%2Ces6" async defer></script>
 
 	<script src="./script/app.js"></script>
 
@@ -54,6 +55,13 @@
 			<?php include "./pages/crew-display.php" ?>
 		</section>
 	</main>
+
+	<script src="script/crew-display.js"></script>
+	<script src="script/crew-editor.js"></script>
+	<script src="script/member-editor.js"></script>
+
+	<div style="display: none;" hidden class="global-buffer">
+	</div>
 </body>
 
 </html>

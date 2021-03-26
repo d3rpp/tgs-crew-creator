@@ -2,9 +2,7 @@
 
 My NCEA Level 3.4 assesment for Level 3 Computer Science in 2021
 
----
-
-## Compiling
+# Compiling
 
 whilst this repository can easily run without the need to compile, no chanhged can be made without recompilation
 
@@ -28,7 +26,7 @@ this will run the compiler in watch mode, any changes will be reflected immediat
 
 ---
 
-## Production
+# Production
 
 in order to deploy this app to production, for security reason, it may be wise to delete the `src` folder as it is the source code
 

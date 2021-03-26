@@ -4,7 +4,7 @@ My NCEA Level 3.4 assesment for Level 3 Computer Science in 2021
 
 # Compiling
 
-whilst this repository can easily run without the need to compile, no chanhged can be made without recompilation
+whilst this repository can easily run without the need to compile, no changes can be made without recompilation
 
 to compile ensure that you have a recent version of NodeJS and NPM installed
 

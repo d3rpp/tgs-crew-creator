@@ -20,10 +20,16 @@ add a `-g` flag at the end to install this globally.
 
 In order to compile it in watch mode, open a terminal or command prompt and run 
 ```bash
-./.compile.sh
+bash ./.compile.sh
 ```
 this will run the compiler in watch mode, any changes will be reflected immediately
 
 **NOTE:** this will only work for MacOS and Linux, if you use windows, run `./.compile.bat` (untested)
 
 ---
+
+## Production
+
+in order to deploy this app to production, for security reason, it may be wise to delete the `src` folder as it is the source code
+
+you should also set the production server to ignore `dotfiles`

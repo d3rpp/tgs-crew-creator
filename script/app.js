@@ -50,6 +50,7 @@ var Router = (function () {
             else {
                 window.location.href = window.location.href.replace(/#(.*)$/, '') + "#" + path;
             }
+            _this.current == path;
             return _this;
         };
         this.listen = function () {
@@ -90,11 +91,19 @@ function navigateClass(pathClass, wrapper, indicator) {
     activeRouteClass = pathClass;
 }
 var activeRouteClass, router;
-var init = function () {
-    var main = document.querySelector("main");
-    var indicator = document.querySelector("span#indicator");
-    if (main == null || indicator == null) {
-        console.error("BROKEN MOTHER FUCKER");
+var innit = function () {
+    var main, indicator;
+    HTMLElement;
+    try {
+        main = document.querySelector("main.wrapper");
+        indicator = document.querySelector("span#indicator");
+        if (main == null || indicator == null) {
+            throw new Error("Good Job Retard");
+        }
+    }
+    catch (error) {
+        console.error("You did it wrong, your IQ is: " + Math.floor(Math.random() * -100));
+        console.error({ error: error });
         return;
     }
     router = new Router({ mode: 'hash', root: '/' }, [
@@ -103,6 +112,34 @@ var init = function () {
         { path: 'crew-display', callback: function () { return navigateClass('crew-display', main, indicator); } },
         { path: '', callback: function () { return navigateClass('member-editor', main, indicator); } }
     ]);
+    if (!('ontouchstart' in document.documentElement)) {
+        window.onkeydown = function (ev) {
+            switch (ev.key) {
+                case "ArrowLeft":
+                    if (router.current == 'member-editor')
+                        break;
+                    else if (router.current == 'crew-editor')
+                        router.navigate('member-editor');
+                    else if (router.current == 'crew-display')
+                        router.navigate('crew-editor');
+                    else
+                        break;
+                    break;
+                case "ArrowRight":
+                    if (router.current == 'member-editor')
+                        router.navigate('crew-editor');
+                    else if (router.current == 'crew-editor')
+                        router.navigate('crew-display');
+                    else if (router.current == 'crew-display')
+                        break;
+                    else
+                        break;
+                    break;
+                default:
+                    break;
+            }
+        };
+    }
 };
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', innit);
 //# sourceMappingURL=app.js.map

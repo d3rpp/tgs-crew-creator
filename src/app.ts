@@ -117,6 +117,7 @@ class Router {
 		} else {
 			window.location.href = `${window.location.href.replace(/#(.*)$/, '')}#${path}`;
 		}
+		this.current == path;
 		return this;
 	};
 
@@ -167,14 +168,24 @@ var activeRouteClass: string, router: Router;
 
 
 /**
- * Initialises everything
+ * Initialises everything,
+ * in a brittish way tho
  */
-const init = () => {
-	const main: HTMLElement | null = document.querySelector("main");
-	const indicator: HTMLElement | null = document.querySelector("span#indicator");
+const innit = () => {
+	var main: HTMLElement, indicator; HTMLElement;
 
-	if (main == null || indicator == null) {
-		console.error("BROKEN MOTHER FUCKER")
+	try {
+		main = document.querySelector("main.wrapper")!;
+		indicator = document.querySelector("span#indicator")!;
+
+		if (main == null || indicator == null) {
+			throw new Error("Good Job Retard");
+		}
+	} catch (error: any) {
+		// insult me, the only person using this code for being retarded and not setting up the DOM properly
+		console.error("You did it wrong, your IQ is: " + Math.floor(Math.random() * -100));
+		console.error({ error });
+		// also prevents anything from working
 		return;
 	}
 
@@ -188,9 +199,71 @@ const init = () => {
 		]
 	);
 
+	if (!('ontouchstart' in document.documentElement)) {
+
+		// Quality of Life Feature
+		// also technically an advanced feature
+		// allows page switching in tabs with arrow keys
+		window.onkeydown = (ev: KeyboardEvent) => {
+			switch (ev.key) {
+				case "ArrowLeft":
+					if (router.current == 'member-editor') break;
+					else if (router.current == 'crew-editor') router.navigate('member-editor');
+					else if (router.current == 'crew-display') router.navigate('crew-editor');
+					else break;
+					break;
+				case "ArrowRight":
+					if (router.current == 'member-editor') router.navigate('crew-editor');
+					else if (router.current == 'crew-editor') router.navigate('crew-display');
+					else if (router.current == 'crew-display') break;
+					else break;
+					break;
+				default:
+					break
+			}
+		}
+	}
+
 }
 
 /**
  * Starting Point of javascript program
  */
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', innit);
+
+// ████████╗██╗░░██╗██╗░██████╗  ██╗░██████╗  ██████╗░░█████╗░██████╗░  ██████╗░██╗░░░██╗████████╗
+// ╚══██╔══╝██║░░██║██║██╔════╝  ██║██╔════╝  ██╔══██╗██╔══██╗██╔══██╗  ██╔══██╗██║░░░██║╚══██╔══╝
+// ░░░██║░░░███████║██║╚█████╗░  ██║╚█████╗░  ██████╦╝███████║██║░░██║  ██████╦╝██║░░░██║░░░██║░░░
+// ░░░██║░░░██╔══██║██║░╚═══██╗  ██║░╚═══██╗  ██╔══██╗██╔══██║██║░░██║  ██╔══██╗██║░░░██║░░░██║░░░
+// ░░░██║░░░██║░░██║██║██████╔╝  ██║██████╔╝  ██████╦╝██║░░██║██████╔╝  ██████╦╝╚██████╔╝░░░██║░░░
+// ░░░╚═╝░░░╚═╝░░╚═╝╚═╝╚═════╝░  ╚═╝╚═════╝░  ╚═════╝░╚═╝░░╚═╝╚═════╝░  ╚═════╝░░╚═════╝░░░░╚═╝░░░
+
+// ██╗████████╗  ░██╗░░░░░░░██╗░█████╗░██████╗░██╗░░██╗░██████╗
+// ██║╚══██╔══╝  ░██║░░██╗░░██║██╔══██╗██╔══██╗██║░██╔╝██╔════╝
+// ██║░░░██║░░░  ░╚██╗████╗██╔╝██║░░██║██████╔╝█████═╝░╚█████╗░
+// ██║░░░██║░░░  ░░████╔═████║░██║░░██║██╔══██╗██╔═██╗░░╚═══██╗
+// ██║░░░██║░░░  ░░╚██╔╝░╚██╔╝░╚█████╔╝██║░░██║██║░╚██╗██████╔╝
+// ╚═╝░░░╚═╝░░░  ░░░╚═╝░░░╚═╝░░░╚════╝░╚═╝░░╚═╝╚═╝░░╚═╝╚═════╝░
+
+// ░██████╗██╗░░░██╗██████╗░██████╗░██████╗░██╗░██████╗██╗███╗░░██╗░██████╗░██╗░░░░░██╗░░░██╗
+// ██╔════╝██║░░░██║██╔══██╗██╔══██╗██╔══██╗██║██╔════╝██║████╗░██║██╔════╝░██║░░░░░╚██╗░██╔╝
+// ╚█████╗░██║░░░██║██████╔╝██████╔╝██████╔╝██║╚█████╗░██║██╔██╗██║██║░░██╗░██║░░░░░░╚████╔╝░
+// ░╚═══██╗██║░░░██║██╔══██╗██╔═══╝░██╔══██╗██║░╚═══██╗██║██║╚████║██║░░╚██╗██║░░░░░░░╚██╔╝░░
+// ██████╔╝╚██████╔╝██║░░██║██║░░░░░██║░░██║██║██████╔╝██║██║░╚███║╚██████╔╝███████╗░░░██║░░░
+// ╚═════╝░░╚═════╝░╚═╝░░╚═╝╚═╝░░░░░╚═╝░░╚═╝╚═╝╚═════╝░╚═╝╚═╝░░╚══╝░╚═════╝░╚══════╝░░░╚═╝░░░
+
+// ░██╗░░░░░░░██╗███████╗██╗░░░░░██╗░░░░░
+// ░██║░░██╗░░██║██╔════╝██║░░░░░██║░░░░░
+// ░╚██╗████╗██╔╝█████╗░░██║░░░░░██║░░░░░
+// ░░████╔═████║░██╔══╝░░██║░░░░░██║░░░░░
+// ░░╚██╔╝░╚██╔╝░███████╗███████╗███████╗
+// ░░░╚═╝░░░╚═╝░░╚══════╝╚══════╝╚══════╝
+
+//  i spent 20 minutes on that getting that in, no regrets
+
+// 17:29:15 - File change detected. Starting incremental compilation...
+// [0]
+// [0]
+// [0] 17:29:15 - Found 0 errors.Watching for file changes.
+
+// - Compiler, i guess

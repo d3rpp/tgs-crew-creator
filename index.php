@@ -44,7 +44,7 @@
 			<span id="indicator"></span>
 		</div>
 	</header>
-	<main>
+	<main class="wrapper">
 		<section class="page member-editor">
 			<?php include "./pages/member-editor.php" ?>
 		</section>

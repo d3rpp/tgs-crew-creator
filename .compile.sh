@@ -1,1 +1,0 @@
-concurrently "tsc --watch" "sass --watch ./src/style/style.scss ./style/style.css"

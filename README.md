@@ -2,6 +2,9 @@
 
 My NCEA Level 3.4 assesment for Level 3 Computer Science in 2021
 
+# Using
+in order to open the index.html, open the one in the `dist` directory
+
 # Compiling
 
 whilst this repository can easily run without the need to compile, no changes can be made without recompilation
@@ -10,7 +13,7 @@ to compile ensure that you have a recent version of NodeJS and NPM installed
 
 to install all of the required packages, use:
 ```bash
-npm i concurrently tsc-watch typescript sass
+npm i -g parcel-bundler
 ```
 
 this will install the typescript compiler and the sass compiler

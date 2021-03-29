@@ -1,3 +1,5 @@
+import { MakeHttpRequestAsync } from "./request";
+
 interface Route {
 	path: string | RegExp;
 	callback: Function;
@@ -165,14 +167,20 @@ function navigateClass(pathClass: string, wrapper: HTMLElement, indicator: HTMLE
 
 var activeRouteClass: string, router: Router;
 
-
+// function checkHTMLImport(): boolean {
+// 	return 'import' in document.createElement('link');
+// }
 
 /**
  * Initialises everything,
  * in a brittish way tho
  */
-const innit = () => {
+const innit = (): void => {
 	var main: HTMLElement, indicator; HTMLElement;
+
+	// if (!checkHTMLImport()) {
+	// 	console.error("HTML IMPORT NOT ENABLED");
+	// }
 
 	try {
 		main = document.querySelector("main.wrapper")!;
@@ -199,30 +207,32 @@ const innit = () => {
 		]
 	);
 
-	if (!('ontouchstart' in document.documentElement)) {
+	// MakeHttpRequestAsync({ url: "https://jsonplaceholder.typicode.com/todos/10", method: "GET" }).then((val) => console.log(val));
 
-		// Quality of Life Feature
-		// also technically an advanced feature
-		// allows page switching in tabs with arrow keys
-		window.onkeydown = (ev: KeyboardEvent) => {
-			switch (ev.key) {
-				case "ArrowLeft":
-					if (router.current == 'member-editor') break;
-					else if (router.current == 'crew-editor') router.navigate('member-editor');
-					else if (router.current == 'crew-display') router.navigate('crew-editor');
-					else break;
-					break;
-				case "ArrowRight":
-					if (router.current == 'member-editor') router.navigate('crew-editor');
-					else if (router.current == 'crew-editor') router.navigate('crew-display');
-					else if (router.current == 'crew-display') break;
-					else break;
-					break;
-				default:
-					break
-			}
-		}
-	}
+	// if (!('ontouchstart' in document.documentElement)) {
+
+	// 	// Quality of Life Feature
+	// 	// also technically an advanced feature
+	// 	// allows page switching in tabs with arrow keys
+	// 	window.onkeydown = (ev: KeyboardEvent) => {
+	// 		switch (ev.key) {
+	// 			case "ArrowLeft":
+	// 				if (router.current == 'member-editor') break;
+	// 				else if (router.current == 'crew-editor') router.navigate('member-editor');
+	// 				else if (router.current == 'crew-display') router.navigate('crew-editor');
+	// 				else break;
+	// 				break;
+	// 			case "ArrowRight":
+	// 				if (router.current == 'member-editor') router.navigate('crew-editor');
+	// 				else if (router.current == 'crew-editor') router.navigate('crew-display');
+	// 				else if (router.current == 'crew-display') break;
+	// 				else break;
+	// 				break;
+	// 			default:
+	// 				break
+	// 		}
+	// 	}
+	// }
 
 }
 

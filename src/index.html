@@ -6,13 +6,14 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<!-- JQuery -->
-	<!-- <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script> -->
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 
-	<link rel="stylesheet" href="style/style.css">
-	<script crossorigin="anonymous" src="https://polyfill.io/v3/polyfill.js?features=Map%2CObject.defineProperties%2CObject.defineProperty%2Ces6" async defer></script>
+	<link rel="stylesheet" href="./style/style.scss">
+	<script crossorigin="anonymous"
+		src="https://polyfill.io/v3/polyfill.js?features=Map%2CObject.defineProperties%2CObject.defineProperty%2Ces6"
+		async defer></script>
 
-	<script src="./script/app.js"></script>
+	<script src="./app.ts"></script>
 
 	<title>TGS Rowing Club Crew Creator</title>
 </head>
@@ -46,19 +47,29 @@
 	</header>
 	<main class="wrapper">
 		<section class="page member-editor">
-			<?php include "./pages/member-editor.php" ?>
+			<!-- Welcome to HTML 5 -->
+			<!-- <link rel="import" href="pages/member-editor.html"> -->
+
 		</section>
 		<section class="page crew-editor">
-			<?php include "./pages/crew-editor.php" ?>
+			<!-- <link rel="import" href="pages/crew-editor.html"> -->
+
 		</section>
 		<section class="page crew-display">
-			<?php include "./pages/crew-display.php" ?>
+			<!-- <link rel="import" href="pages/crew-display.html"> -->
+
 		</section>
 	</main>
 
-	<script src="script/crew-display.js"></script>
+	<script>
+		$(function () {
+			$("section.page.member-editor").load("./member-editor.html");
+		});
+	</script>
+
+	<!-- <script src="script/crew-display.js"></script>
 	<script src="script/crew-editor.js"></script>
-	<script src="script/member-editor.js"></script>
+	<script src="script/member-editor.js"></script> -->
 
 	<div style="display: none;" hidden class="global-buffer">
 	</div>

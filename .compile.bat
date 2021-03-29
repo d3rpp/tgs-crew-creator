@@ -1,1 +1,0 @@
-concurrently "tsc-watch ./src/app.ts --outDir ./script" "sass --watch ./src/style/style.scss ./style/style.css"

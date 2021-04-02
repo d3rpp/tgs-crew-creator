@@ -1,4 +1,7 @@
 import { MakeHttpRequestAsync } from "./request";
+import { MemberEditor } from './member-editor';
+import { CrewEditor } from "./crew-editor";
+import { CrewDisplay } from "./crew-display";
 
 interface Route {
 	path: string | RegExp;
@@ -167,9 +170,11 @@ function navigateClass(pathClass: string, wrapper: HTMLElement, indicator: HTMLE
 
 var activeRouteClass: string, router: Router;
 
-// function checkHTMLImport(): boolean {
-// 	return 'import' in document.createElement('link');
-// }
+var memberEditor: MemberEditor;
+var crewEditor: CrewEditor;
+var crewDisplay: CrewDisplay;
+
+
 
 /**
  * Initialises everything,
@@ -178,9 +183,15 @@ var activeRouteClass: string, router: Router;
 const innit = (): void => {
 	var main: HTMLElement, indicator; HTMLElement;
 
-	// if (!checkHTMLImport()) {
-	// 	console.error("HTML IMPORT NOT ENABLED");
-	// }
+	if (!('import' in document.createElement('link'))) {
+		console.warn("HTML IMPORT NOT ENABLED");
+	}
+
+	// window.onstorage = (() => { console.log(window.localStorage) });
+
+	window.addEventListener('storage', () => {
+		console.log(window.localStorage);
+	})
 
 	try {
 		main = document.querySelector("main.wrapper")!;
@@ -197,6 +208,15 @@ const innit = (): void => {
 		return;
 	}
 
+	try {
+		memberEditor = new MemberEditor(".page.member-editor");
+		crewEditor = new CrewEditor(".page.crew-editor");
+		crewDisplay = new CrewDisplay(".page.crew-display");
+	} catch (error) {
+		console.error({ error });
+	}
+
+
 	// create router instance
 	router = new Router({ mode: 'hash', root: '/' },
 		[
@@ -206,8 +226,6 @@ const innit = (): void => {
 			{ path: '', callback: () => navigateClass('member-editor', main, indicator) }
 		]
 	);
-
-	// MakeHttpRequestAsync({ url: "https://jsonplaceholder.typicode.com/todos/10", method: "GET" }).then((val) => console.log(val));
 
 	// if (!('ontouchstart' in document.documentElement)) {
 

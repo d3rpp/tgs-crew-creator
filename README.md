@@ -13,7 +13,7 @@ to compile ensure that you have a recent version of NodeJS and NPM installed
 
 to install all of the required packages, use:
 ```bash
-npm i -g parcel-bundler
+npm i
 ```
 
 this will install the typescript compiler and the sass compiler

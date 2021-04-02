@@ -6,7 +6,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<!-- <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script> -->
 
 	<link rel="stylesheet" href="./style/style.scss">
 	<script crossorigin="anonymous"
@@ -48,25 +48,60 @@
 	<main class="wrapper">
 		<section class="page member-editor">
 			<!-- Welcome to HTML 5 -->
-			<!-- <link rel="import" href="pages/member-editor.html"> -->
+			<div class="container">
+				<div class="editor">
+					<div class="row">
+						<div class="input name">
+							<input type="text" required class="nameInput">
+							<span class="highlight"></span>
+							<span class="bar"></span>
+							<label>Name</label>
+						</div>
+					</div>
+					<div class="row">
+						<!-- Age Group Select and Novice Toggle -->
+						<div class="select">
+							<select class="select-text" required>
+								<option value="" disabled selected></option>
+								<option value="U15">U15</option>
+								<option value="U16">U16</option>
+								<option value="U17">U17</option>
+								<option value="U18">U18</option>
+							</select>
+							<span class="select-highlight"></span>
+							<span class="select-bar"></span>
+							<label class="select-label">Age Group</label>
+						</div>
+
+						<div class="toggle novice">
+							<input type="checkbox" id="unchecked" class="cbx hidden" />
+							<label for="unchecked" class="lbl"></label>
+						</div>
+						<span class="nov-label">Novice</span>
+
+					</div>
+					<div class="row">Gender Select and Buttons</div>
+				</div>
+				<div class="table">
+					<table>
+						<tr class="header">
+							<th>Gender</th>
+							<th>Age Group</th>
+							<th class="big">Name</th>
+							<th>Actions</th>
+						</tr>
+					</table>
+				</div>
+			</div>
 
 		</section>
 		<section class="page crew-editor">
-			<!-- <link rel="import" href="pages/crew-editor.html"> -->
-
+			<h1>Crew Editor</h1>
 		</section>
 		<section class="page crew-display">
-			<!-- <link rel="import" href="pages/crew-display.html"> -->
-
+			<h1>Crew Display</h1>
 		</section>
 	</main>
-
-	<script>
-		$(function () {
-			$("section.page.member-editor").load("./member-editor.html");
-		});
-	</script>
-
 	<!-- <script src="script/crew-display.js"></script>
 	<script src="script/crew-editor.js"></script>
 	<script src="script/member-editor.js"></script> -->

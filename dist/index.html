@@ -8,6 +8,8 @@
 
 	<!-- <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script> -->
 
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
 	<link rel="stylesheet" href="/style.e0c02e61.css">
 	<script crossorigin="anonymous" src="https://polyfill.io/v3/polyfill.js?features=Map%2CObject.defineProperties%2CObject.defineProperty%2Ces6" async="" defer=""></script>
 
@@ -19,7 +21,7 @@
 <body>
 	<header>
 		<div class="left">
-			Takapuna Grammar School Crew Creator
+			Takapuna Grammar School Rowing Club Crew Creator
 		</div>
 		<div class="right">
 			<ul>
@@ -44,41 +46,74 @@
 		</div>
 	</header>
 	<main class="wrapper">
+		<!-- 
+			
+			Member Editor
+
+		 -->
+
+		<!-- #region Member Editor -->
 		<section class="page member-editor">
-			<!-- Welcome to HTML 5 -->
 			<div class="container">
-				<div class="editor">
-					<div class="row">
-						<div class="input name">
-							<input type="text" required="" class="nameInput">
-							<span class="highlight"></span>
-							<span class="bar"></span>
-							<label>Name</label>
-						</div>
-					</div>
-					<div class="row">
-						<!-- Age Group Select and Novice Toggle -->
-						<div class="select">
-							<select class="select-text" required="">
-								<option value="" disabled="" selected=""></option>
-								<option value="U15">U15</option>
-								<option value="U16">U16</option>
-								<option value="U17">U17</option>
-								<option value="U18">U18</option>
-							</select>
-							<span class="select-highlight"></span>
-							<span class="select-bar"></span>
-							<label class="select-label">Age Group</label>
-						</div>
-
-						<div class="toggle novice">
-							<input type="checkbox" id="unchecked" class="cbx hidden">
-							<label for="unchecked" class="lbl"></label>
-						</div>
-						<span class="nov-label">Novice</span>
+				<div class="left">
+					<div class="viewer">
 
 					</div>
-					<div class="row">Gender Select and Buttons</div>
+					<div class="editor">
+						<div class="row">
+							<div class="input name">
+								<input type="text" required="" class="nameInput">
+								<span class="highlight"></span>
+								<span class="bar"></span>
+								<label>Name</label>
+							</div>
+						</div>
+						<div class="row">
+							<!-- Age Group Select and Novice Toggle -->
+							<div class="select">
+								<select class="select-text age-group" required="">
+									<option value="" disabled="" selected=""></option>
+									<option value="U15">&nbsp;&nbsp;U15</option>
+									<option value="U16">&nbsp;&nbsp;U16</option>
+									<option value="U17">&nbsp;&nbsp;U17</option>
+									<option value="U18">&nbsp;&nbsp;U18</option>
+								</select>
+								<span class="select-highlight"></span>
+								<span class="select-bar"></span>
+								<label class="select-label">Age Group</label>
+							</div>
+
+							<div class="toggle">
+								<input type="checkbox" id="unchecked" class="cbx hidden novice">
+								<label for="unchecked" class="lbl"></label>
+							</div>
+							<span class="nov-label">Novice</span>
+
+						</div>
+						<div class="row">
+							<!-- Gender Select and Buttons -->
+							<div class="select">
+								<select class="select-text gender" required="">
+									<option value="" disabled="" selected=""></option>
+									<option value="M">M</option>
+									<option value="F">F</option>
+								</select>
+								<span class="select-highlight"></span>
+								<span class="select-bar"></span>
+								<label class="select-label">Gender</label>
+							</div>
+
+							<span style="flex: 1 1 auto;"></span>
+							<div class="buttons">
+								<button class="clear">
+									Clear
+								</button>
+								<button class="submit">
+									Save
+								</button>
+							</div>
+						</div>
+					</div>
 				</div>
 				<div class="table">
 					<table>
@@ -93,16 +128,31 @@
 			</div>
 
 		</section>
+
+		<!-- #endregion -->
+
+		<!-- 
+
+			Crew Editor
+
+		 -->
+		<!-- #region Crew Editor -->
 		<section class="page crew-editor">
 			<h1>Crew Editor</h1>
 		</section>
+		<!-- #endregion -->
+
+		<!-- 
+
+			Crew Display
+
+		 -->
+		<!-- #region Crew Display -->
 		<section class="page crew-display">
 			<h1>Crew Display</h1>
 		</section>
+		<!-- #endregion -->
 	</main>
-	<!-- <script src="script/crew-display.js"></script>
-	<script src="script/crew-editor.js"></script>
-	<script src="script/member-editor.js"></script> -->
 
 	<div style="display: none;" hidden="" class="global-buffer">
 	</div>

@@ -142,10 +142,28 @@ body main .member-editor .container:before {
   font-size: xx-large;
   font-weight: 100;
 }
-body main .member-editor .container .editor {
+body main .member-editor .container .left {
   align-self: center;
   border-radius: 4px;
   margin-right: 32px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+body main .member-editor .container .left .viewer {
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  background-color: #002531;
+  margin-bottom: 16px;
+}
+body main .member-editor .container .left .editor {
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.15);
   width: 100%;
   height: 100%;
@@ -155,21 +173,21 @@ body main .member-editor .container .editor {
   justify-content: space-evenly;
   background-color: #002531;
 }
-body main .member-editor .container .editor .row {
+body main .member-editor .container .left .editor .row {
   height: 72px;
   display: flex;
   justify-content: left;
   align-items: center;
 }
-body main .member-editor .container .editor .row .select {
+body main .member-editor .container .left .editor .row .select {
   position: relative;
   width: 30%;
 }
-body main .member-editor .container .editor .row .select .select-text {
+body main .member-editor .container .left .editor .row .select .select-text {
   appearance: none;
   -webkit-appearance: none;
 }
-body main .member-editor .container .editor .row .select .select-text {
+body main .member-editor .container .left .editor .row .select .select-text {
   position: relative;
   font-family: inherit;
   background-color: transparent;
@@ -181,20 +199,20 @@ body main .member-editor .container .editor .row .select .select-text {
   border-bottom: 1px solid #757575;
   color: white;
 }
-body main .member-editor .container .editor .row .select .select-text:focus {
+body main .member-editor .container .left .editor .row .select .select-text:focus {
   outline: none;
   border-bottom: 1px solid rgba(0, 0, 0, 0);
 }
-body main .member-editor .container .editor .row .select .select-text:focus ~ .select-label, body main .member-editor .container .editor .row .select .select-text:valid ~ .select-label {
+body main .member-editor .container .left .editor .row .select .select-text:focus ~ .select-label, body main .member-editor .container .left .editor .row .select .select-text:valid ~ .select-label {
   color: #ffb511;
   top: -20px;
   transition: 0.2s ease all;
   font-size: 14px;
 }
-body main .member-editor .container .editor .row .select .select-text:focus ~ .select-bar:before, body main .member-editor .container .editor .row .select .select-text:focus ~ .select-bar:after {
+body main .member-editor .container .left .editor .row .select .select-text:focus ~ .select-bar:before, body main .member-editor .container .left .editor .row .select .select-text:focus ~ .select-bar:after {
   width: 50%;
 }
-body main .member-editor .container .editor .row .select:after {
+body main .member-editor .container .left .editor .row .select:after {
   position: absolute;
   top: 18px;
   right: 10px;
@@ -208,8 +226,8 @@ body main .member-editor .container .editor .row .select:after {
   border-top: 6px solid #ffb511;
   pointer-events: none;
 }
-body main .member-editor .container .editor .row .select .select-label {
-  color: #ffb511;
+body main .member-editor .container .left .editor .row .select .select-label {
+  color: #fff;
   font-size: 16px;
   font-weight: normal;
   position: absolute;
@@ -218,7 +236,7 @@ body main .member-editor .container .editor .row .select .select-label {
   top: 10px;
   transition: 0.2s ease all;
 }
-body main .member-editor .container .editor .row .select .select-highlight {
+body main .member-editor .container .left .editor .row .select .select-highlight {
   position: absolute;
   height: 60%;
   width: 100%;
@@ -227,12 +245,12 @@ body main .member-editor .container .editor .row .select .select-highlight {
   pointer-events: none;
   opacity: 0.5;
 }
-body main .member-editor .container .editor .row .select .select-bar {
+body main .member-editor .container .left .editor .row .select .select-bar {
   position: relative;
   display: block;
   width: 100%;
 }
-body main .member-editor .container .editor .row .select .select-bar:before, body main .member-editor .container .editor .row .select .select-bar:after {
+body main .member-editor .container .left .editor .row .select .select-bar:before, body main .member-editor .container .left .editor .row .select .select-bar:after {
   content: "";
   height: 2px;
   width: 0;
@@ -241,13 +259,13 @@ body main .member-editor .container .editor .row .select .select-bar:before, bod
   background: #ffb511;
   transition: 0.2s ease all;
 }
-body main .member-editor .container .editor .row .select .select-bar:before {
+body main .member-editor .container .left .editor .row .select .select-bar:before {
   left: 50%;
 }
-body main .member-editor .container .editor .row .select .select-bar:after {
+body main .member-editor .container .left .editor .row .select .select-bar:after {
   right: 50%;
 }
-body main .member-editor .container .editor .row .input {
+body main .member-editor .container .left .editor .row .input {
   position: relative;
   margin: auto 0;
   /* LABEL ======================================= */
@@ -256,10 +274,10 @@ body main .member-editor .container .editor .row .input {
   /* HIGHLIGHTER ================================== */
   /* active state */
 }
-body main .member-editor .container .editor .row .input.name {
+body main .member-editor .container .left .editor .row .input.name {
   width: 100%;
 }
-body main .member-editor .container .editor .row .input input {
+body main .member-editor .container .left .editor .row .input input {
   font-size: 18px;
   padding: 10px 10px 10px 5px;
   display: block;
@@ -267,22 +285,23 @@ body main .member-editor .container .editor .row .input input {
   border: none;
   border-bottom: 1px solid #757575;
   background-color: transparent;
+  color: white;
 }
-body main .member-editor .container .editor .row .input input:focus {
+body main .member-editor .container .left .editor .row .input input:focus {
   outline: none;
 }
-body main .member-editor .container .editor .row .input input:focus ~ label, body main .member-editor .container .editor .row .input input:valid ~ label {
+body main .member-editor .container .left .editor .row .input input:focus ~ label, body main .member-editor .container .left .editor .row .input input:valid ~ label {
   top: -20px;
   font-size: 14px;
 }
-body main .member-editor .container .editor .row .input input:focus ~ .bar:before, body main .member-editor .container .editor .row .input input:focus ~ .bar:after {
+body main .member-editor .container .left .editor .row .input input:focus ~ .bar:before, body main .member-editor .container .left .editor .row .input input:focus ~ .bar:after {
   width: 50%;
 }
-body main .member-editor .container .editor .row .input input:focus ~ .highlight {
+body main .member-editor .container .left .editor .row .input input:focus ~ .highlight {
   animation: inputHighlighter 0.3s ease;
 }
-body main .member-editor .container .editor .row .input label {
-  color: #ffb511;
+body main .member-editor .container .left .editor .row .input label {
+  color: #fff;
   font-size: 16px;
   font-weight: normal;
   position: absolute;
@@ -293,12 +312,12 @@ body main .member-editor .container .editor .row .input label {
   -moz-transition: 0.2s ease all;
   -webkit-transition: 0.2s ease all;
 }
-body main .member-editor .container .editor .row .input .bar {
+body main .member-editor .container .left .editor .row .input .bar {
   position: relative;
   display: block;
   width: 300px;
 }
-body main .member-editor .container .editor .row .input .bar:before, body main .member-editor .container .editor .row .input .bar:after {
+body main .member-editor .container .left .editor .row .input .bar:before, body main .member-editor .container .left .editor .row .input .bar:after {
   content: "";
   height: 2px;
   width: 0;
@@ -309,13 +328,13 @@ body main .member-editor .container .editor .row .input .bar:before, body main .
   -moz-transition: 0.2s ease all;
   -webkit-transition: 0.2s ease all;
 }
-body main .member-editor .container .editor .row .input .bar:before {
+body main .member-editor .container .left .editor .row .input .bar:before {
   left: 50%;
 }
-body main .member-editor .container .editor .row .input .bar:after {
+body main .member-editor .container .left .editor .row .input .bar:after {
   right: 50%;
 }
-body main .member-editor .container .editor .row .input .highlight {
+body main .member-editor .container .left .editor .row .input .highlight {
   position: absolute;
   height: 60%;
   width: 100px;
@@ -324,12 +343,12 @@ body main .member-editor .container .editor .row .input .highlight {
   pointer-events: none;
   opacity: 0.5;
 }
-body main .member-editor .container .editor .row .toggle.novice {
+body main .member-editor .container .left .editor .row .toggle.novice {
   margin-left: 32px;
   border-left: 1px solid #757575;
   padding-left: 32px;
 }
-body main .member-editor .container .editor .row .toggle .lbl {
+body main .member-editor .container .left .editor .row .toggle .lbl {
   position: relative;
   display: block;
   height: 20px;
@@ -339,7 +358,7 @@ body main .member-editor .container .editor .row .toggle .lbl {
   cursor: pointer;
   transition: all 0.3s ease;
 }
-body main .member-editor .container .editor .row .toggle .lbl:after {
+body main .member-editor .container .left .editor .row .toggle .lbl:after {
   position: absolute;
   left: -2px;
   top: -3px;
@@ -352,30 +371,64 @@ body main .member-editor .container .editor .row .toggle .lbl:after {
   content: "";
   transition: all 0.2s ease;
 }
-body main .member-editor .container .editor .row .toggle .lbl:active:after {
+body main .member-editor .container .left .editor .row .toggle .lbl:active:after {
   transform: scale(1.15, 0.85);
 }
-body main .member-editor .container .editor .row .toggle .cbx:checked ~ label {
+body main .member-editor .container .left .editor .row .toggle .cbx:checked ~ label {
   background: #916400;
 }
-body main .member-editor .container .editor .row .toggle .cbx:checked ~ label:after {
+body main .member-editor .container .left .editor .row .toggle .cbx:checked ~ label:after {
   left: 20px;
   background: #ffb511;
 }
-body main .member-editor .container .editor .row .toggle .cbx:disabled ~ label {
+body main .member-editor .container .left .editor .row .toggle .cbx:disabled ~ label {
   background: #d5d5d5;
   pointer-events: none;
 }
-body main .member-editor .container .editor .row .toggle .cbx:disabled ~ label:after {
+body main .member-editor .container .left .editor .row .toggle .cbx:disabled ~ label:after {
   background: #bcbdbc;
 }
-body main .member-editor .container .editor .row .toggle .hidden {
+body main .member-editor .container .left .editor .row .toggle .hidden {
   display: none;
 }
-body main .member-editor .container .editor .row .nov-label {
+body main .member-editor .container .left .editor .row .nov-label {
   margin-left: 16px;
   font-size: 16px;
   color: #ffb511;
+}
+body main .member-editor .container .left .editor .row .buttons {
+  margin-right: 8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  width: 300px;
+  height: 72px;
+}
+body main .member-editor .container .left .editor .row .buttons button {
+  width: 50%;
+  margin: 8px;
+}
+body main .member-editor .container .left .editor .row .buttons .clear {
+  background-color: transparent;
+  border: 1px solid #757575;
+  border-radius: 5px;
+  font-size: 16px;
+  color: #ffb511;
+}
+body main .member-editor .container .left .editor .row .buttons .submit {
+  background-color: #ffb511;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  box-shadow: none;
+  transition: background-color 100ms ease-out;
+}
+body main .member-editor .container .left .editor .row .buttons .submit:hover {
+  background-color: #ffb716;
+}
+body main .member-editor .container .left .editor .row .buttons .submit:active {
+  color: black;
+  box-shadow: 0px 0px 3px black;
 }
 body main .member-editor .container .table {
   overflow-y: auto;
@@ -405,6 +458,16 @@ body main .member-editor .container .table table tr td {
   overflow: hidden;
   white-space: nowrap;
   flex-wrap: nowrap;
+}
+body main .member-editor .container .table table tr .actions {
+  display: flex;
+  justify-content: space-evenly;
+}
+body main .member-editor .container .table table tr .actions button {
+  border: none;
+  background: transparent;
+  color: white;
+  cursor: pointer;
 }
 body main .member-editor .container .table table tr.header {
   background-color: #ffb511;

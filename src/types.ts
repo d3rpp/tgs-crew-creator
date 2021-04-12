@@ -25,9 +25,9 @@ class CrewMember {
 	private fromInterface(i: CrewMemberInterface) {
 		this.id = i.id!;
 		this.name = i.name;
-		this.gender = i.gender;
+		this.gender = i.gender as Gender;
 		this.novice = i.novice;
-		this.ageGroup = i.ageGroup;
+		this.ageGroup = i.ageGroup as AgeGroup;
 	}
 
 	private fromValues(id: number, name: string, gender: Gender, ageGroup: AgeGroup, novice: boolean) {
@@ -41,11 +41,12 @@ class CrewMember {
 }
 
 interface CrewMemberInterface {
-	id?: number;
-	name: string;
-	gender: Gender;
-	ageGroup: AgeGroup;
-	novice: boolean;
+	id?: number | undefined;
+	name?: string | undefined;
+	gender?: Gender | string;
+	ageGroup?: AgeGroup | string;
+	novice?: boolean | undefined;
 }
+
 
 export { CrewMember, CrewMemberInterface, Gender, AgeGroup }

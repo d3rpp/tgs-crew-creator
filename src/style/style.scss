@@ -3,6 +3,13 @@
 
 $easing: cubic-bezier(0.4, 0, 0.2, 1);
 
+.material-icons {
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-webkit-user-drag: none;
+}
+
 * {
 	margin: 0;
 	padding: 0;
@@ -34,7 +41,7 @@ body {
 
 		color: white;
 
-		z-index: 100;
+		z-index: 1000;
 
 		height: 56px;
 
@@ -120,6 +127,7 @@ body {
 	}
 
 	main {
+		background-color: lighten(#002a37, 2);
 		width: 100%;
 		height: 100%;
 
@@ -149,8 +157,6 @@ body {
 		section {
 			width: 100vw !important;
 			height: calc(100vh - var(--header-height));
-
-			background-color: lighten(#002a37, 2);
 
 			overflow-x: hidden;
 			overflow-y: auto;
@@ -188,7 +194,7 @@ body {
 		// because of this it'll only give it any purpose if, and only if,
 		// it is referenced in visible files (like this one)
 
-		.crew-editor {
+		#crew-editor {
 			// this imports the "_crew-editor.scss" file and uses it,
 			// the underscore and file extention do not matter unless
 			// there are 2 files with the same name and different extensions
@@ -196,11 +202,11 @@ body {
 			@import "./crew-editor";
 		}
 
-		.crew-display {
+		#crew-display {
 			@import "./crew-display";
 		}
 
-		.member-editor {
+		#member-editor {
 			@import "./member-editor";
 		}
 	}

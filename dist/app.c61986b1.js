@@ -1578,13 +1578,13 @@ function () {
       });
       this.ageGroupSelect = this.editor.querySelector("select.age-group");
       this.ageGroupSelect.addEventListener('input', function () {
-        _this.buffer.ageGroup = dompurify_1.sanitize(_this.ageGroupSelect.value);
+        _this.buffer.ageGroup = _this.ageGroupSelect.value;
 
         _this.updateViewer();
       });
       this.genderSelect = this.editor.querySelector("select.gender");
       this.genderSelect.addEventListener('input', function () {
-        _this.buffer.gender = dompurify_1.sanitize(_this.genderSelect.value);
+        _this.buffer.gender = _this.genderSelect.value;
 
         _this.updateViewer();
       });
@@ -1596,7 +1596,8 @@ function () {
       });
       this.clearButton = this.editor.querySelector(".buttons button.clear");
       this.clearButton.addEventListener('mouseup', function () {
-        _this.buffer = {};
+        // this.buffer = {};
+        _this.resetBuffer();
 
         _this.updateInputForm();
 
@@ -1606,9 +1607,10 @@ function () {
       this.submitButton.addEventListener('mouseup', function () {
         if (!_this.confirmAndSubmitDataFromForm()) {
           alert("There was an error");
-        }
+        } // this.buffer = {};
 
-        _this.buffer = {};
+
+        _this.resetBuffer();
 
         _this.updateViewer();
       });
@@ -1633,14 +1635,38 @@ function () {
     // 	throw new Error("Member Editor: " + e);
     // }
   }
+  /**
+   * Create a randomly generated ascii string, good for getting test data
+   *
+   * @param length Length of the string wanted
+   * @returns A Random string of ascii text
+   */
+
 
   MemberEditor.prototype.testRandomNameGenerator = function (length) {
     return Math.random().toString(36).substr(2, length);
   };
 
+  MemberEditor.prototype.update = function () {
+    this.load();
+    this.insertDataIntoTable();
+    this.updateViewer();
+  };
+  /**
+   * Dump the buffere element to the console
+   */
+
+
   MemberEditor.prototype.dumpBuffer = function () {
     console.warn(__assign({}, this.buffer));
   };
+  /**
+   * Checks if the ID is in use
+   *
+   * @param id The ID to be checked
+   * @returns true if the id is in use
+   */
+
 
   MemberEditor.prototype.idIsUsedforCrewMember = function (id) {
     var tmp = false;
@@ -1653,6 +1679,10 @@ function () {
 
     return tmp;
   };
+  /**
+   * Give the editor buttons their functionality, uses events in order to wait for clicking
+   */
+
 
   MemberEditor.prototype.setupButtons = function () {
     var _this = this;
@@ -1661,11 +1691,20 @@ function () {
       val.querySelectorAll('button').forEach(function (button) {
         if (button.classList.contains('edit')) {
           button.addEventListener('click', function () {
-            return _this.loadDataIntoInputForm( // Welcome to casting strings to numbers in typescript
+            _this.dumpBuffer();
+
+            _this.buffer.id = +button.getAttribute("data-id");
+
+            _this.pushInputToBuffer();
+
+            _this.loadDataIntoInputForm( // Welcome to casting strings to numbers in typescript
             +button.getAttribute('data-index'));
+
+            _this.dumpBuffer();
           });
         } else if (button.classList.contains('delete')) {
-          _this.buffer = {};
+          // this.buffer = {};
+          _this.resetBuffer();
 
           _this.updateInputForm();
 
@@ -1684,10 +1723,16 @@ function () {
       });
     });
   };
+  /**
+   * Verifies and Validates the buffer, which is synced with the inputs, so this serves as a form of input validation
+   * @returns true if the contents of the buffer and be considered a valid CrewMember Object
+   */
+
 
   MemberEditor.prototype.validateBuffer = function () {
     if (this.buffer.name == "" || this.buffer.name == undefined || this.buffer.name == null) {
       this._val = 'name';
+      this.dumpBuffer();
       return false;
     }
 
@@ -1695,6 +1740,7 @@ function () {
 
     if (!this.buffer.ageGroup) {
       this._val = 'ageGroup';
+      this.dumpBuffer();
       return false;
     }
 
@@ -1702,23 +1748,35 @@ function () {
 
     if (!(this.buffer.gender == "M" || this.buffer.gender == "F")) {
       this._val = 'gender';
+      this.dumpBuffer();
       return false;
     }
 
     ;
 
     if (!(this.buffer.novice == true || this.buffer.novice == false)) {
+      this.dumpBuffer();
       return false;
     }
 
     ;
     return true;
   };
+  /**
+   * Updates the viewer element with the latest data from the buffer
+   */
+
 
   MemberEditor.prototype.updateViewer = function () {
-    console.log(this.buffer);
+    // this.dumpBuffer();
     this.viewer.innerHTML = dompurify_1.sanitize((!!this.buffer.gender ? this.buffer.gender : 'Gender') + " | " + (!!this.buffer.ageGroup ? this.buffer.ageGroup : 'Age Group') + ' ' + (this.buffer.novice ? 'Novice' : '') + ' | ' + (!!this.buffer.name ? this.buffer.name : 'Name'));
   };
+  /**
+   * loads the data of a crew member from the data array into the buffer
+   *
+   * @param index index of a CrewMember object in the data array
+   */
+
 
   MemberEditor.prototype.loadDataIntoInputForm = function (index) {
     this.name.value = dompurify_1.sanitize(this.data[index].name);
@@ -1726,14 +1784,36 @@ function () {
     this.ageGroupSelect.value = dompurify_1.sanitize(this.data[index].ageGroup);
     this.genderSelect.value = dompurify_1.sanitize(this.data[index].gender); // this.
   };
+  /**
+   * Sets the buffer to its default 0 value
+   */
+
+
+  MemberEditor.prototype.resetBuffer = function () {
+    this.buffer.name = "";
+    this.buffer.ageGroup = "";
+    this.buffer.gender = "";
+    this.buffer.id = -1;
+    this.buffer.novice = false;
+    this.updateInputForm();
+    this.updateViewer();
+  };
+  /**
+   * Pushes the buffer to the UI Form
+   */
+
 
   MemberEditor.prototype.updateInputForm = function () {
-    console.log(this.buffer);
+    // this.dumpBuffer();
     this.name.value = !!this.buffer.name ? this.buffer.name : "";
     this.ageGroupSelect.value = !!this.buffer.ageGroup ? this.buffer.ageGroup : "";
     this.genderSelect.value = !!this.buffer.gender ? this.buffer.gender : "";
     this.noviceSwitch.checked = this.buffer.novice;
   };
+  /**
+   * Creates test data, uses the random name generator from above
+   */
+
 
   MemberEditor.prototype.initTestData = function () {
     this.data = [];
@@ -1743,30 +1823,31 @@ function () {
         name: this.testRandomNameGenerator(Math.floor(Math.random() * 7) + 5),
         gender: !!Math.round(Math.random()) ? "M" : "F",
         ageGroup: this.testAgeGroups[Math.floor(Math.random() * 4)],
-        novice: !!Math.round(Math.random())
+        novice: !!Math.round(Math.random()),
+        id: this.getUID()
       });
     }
   };
   /**
-   * Generates a new Unique ID for an element, this data will not take
+   * Generates a new Unique ID for an element
    */
 
 
   MemberEditor.prototype.getUID = function () {
-    var valid = false;
     var tmp;
 
     do {
       tmp = Math.floor(Math.random() * 100000);
-
-      if (this.data.some(function (val) {
-        return val.id == tmp;
-      }) == false) {
-        valid = true;
-      }
-    } while (!valid);
+    } while (this.idIsUsedforCrewMember(tmp));
 
     return tmp;
+  };
+
+  MemberEditor.prototype.pushInputToBuffer = function () {
+    this.buffer.name = this.name.value;
+    this.buffer.ageGroup = this.ageGroupSelect.value;
+    this.buffer.gender = this.genderSelect.value;
+    this.buffer.novice = this.noviceSwitch.checked;
   };
   /**
    * Returns the index in this.data of an element with the specified id
@@ -1787,42 +1868,74 @@ function () {
     });
     return i;
   };
+  /**
+   * Validates the data in the buffer and adds it to the data array, immediately saving the data array to window.localStorage
+   * the updates the UI with the latest changes
+   *
+   * @returns true if the submition of the data was successful, otherwise the problem will be pushed to this._val
+   */
+
 
   MemberEditor.prototype.confirmAndSubmitDataFromForm = function () {
     var _this = this;
 
-    if (!this.validateBuffer()) return false;
+    if (!this.validateBuffer()) {
+      console.error("Error In ", this._val);
+      this.dumpBuffer();
+      return false;
+    }
+
     if (!confirm("Are you sure that you'd like to add " + this.buffer.gender + " " + this.buffer.ageGroup + (this.buffer.novice ? " Novice" : "") + " named " + this.buffer.name)) return false;
 
     if (this.buffer.id < 0) {
-      this.buffer.id = null;
-      this.data.push(new types_1.CrewMember(this.buffer));
+      this.buffer.id = this.getUID(); // this.buffer.id = -1;
+
+      this.addCrewMember(this.buffer);
       this.save();
       this.insertDataIntoTable();
+      return true;
     } else {
       this.data.findIndex(function (val) {
         if (val.id == _this.buffer.id) {
           return true;
         }
       });
+      this.save();
     }
   };
+  /**
+   *
+   * Pushes the supplied crew member to the data array object and saves it
+   *
+   * @param member the member to be added
+   */
+
 
   MemberEditor.prototype.addCrewMember = function (member) {
-    var id;
+    if (this.idIsUsedforCrewMember(member.id)) {
+      this.data[this.getIndexOfID(member.id)] = new types_1.CrewMember(member);
+    } else {
+      this.data.push(new types_1.CrewMember(member));
+    }
 
-    do {
-      id = this.getUID();
-    } while (this.idIsUsedforCrewMember(id));
-
-    member.id = id;
-    this.data.push(new types_1.CrewMember(member));
     this.save();
   };
+  /**
+   * Saves the data object array to window.localStorage by base64 encoding it after it has been srtringified
+   *
+   * allows for persistent data usage
+   */
+
 
   MemberEditor.prototype.save = function () {
     localStorage.setItem("crewMembers", btoa(JSON.stringify(this.data)));
   };
+  /**
+   * Loads the data from window.localStorage into the data array
+   *
+   * if there is no data to load, it initialises the data array to an empty array
+   */
+
 
   MemberEditor.prototype.load = function () {
     if (localStorage.getItem('crewMembers') != null) {
@@ -1831,6 +1944,11 @@ function () {
       this.data = [];
     }
   };
+  /**
+   * Updates the table with the up to date information by deleting all of the rows and adding the new ones in,
+   * it isnt the most efficient way to do it but it works
+   */
+
 
   MemberEditor.prototype.insertDataIntoTable = function () {
     var _this = this;
@@ -1846,8 +1964,9 @@ function () {
     this.data.forEach(function (val, i) {
       var row = _this.table.insertRow();
 
-      row.innerHTML = "\n\t\t\t\n\t\t\t\t<td>" + dompurify_1.sanitize(val.gender) + "</td>\n\t\t\t\t<td>" + dompurify_1.sanitize(val.ageGroup) + " " + (val.novice ? "Novice" : "") + "</td>\n\t\t\t\t<td class=\"big\">" + dompurify_1.sanitize(val.name) + "</td>\n\t\t\t\t<td class=\"actions\">\n\t\t\t\t\t<button class=\"edit material-icons\" data-index=\"" + i + "\" data-id=\"" + val.id + "\">edit</button>\n\t\t\t\t\t<button class=\"delete material-icons\" data-index=\"" + i + "\" data-id=\"" + val.id + "\">delete</button>\n\t\t\t\t</td>\n\t\t\t\n\t\t\t";
-    });
+      row.innerHTML = "\n\t\t\t\t<td>" + dompurify_1.sanitize(val.gender) + "</td>\n\t\t\t\t<td>" + dompurify_1.sanitize(val.ageGroup) + " " + (val.novice ? "Novice" : "") + "</td>\n\t\t\t\t<td class=\"big\">" + dompurify_1.sanitize(val.name) + "</td>\n\t\t\t\t<td class=\"actions\">\n\t\t\t\t\t<button class=\"edit material-icons\" data-index=\"" + i + "\" data-id=\"" + val.id + "\">edit</button>\n\t\t\t\t\t<button class=\"delete material-icons\" data-index=\"" + i + "\" data-id=\"" + val.id + "\">delete</button>\n\t\t\t\t</td>\n\t\t\t\n\t\t\t";
+    }); // calls setup buttons afterwards to make the edit and delete buttons work
+
     this.setupButtons();
   };
 
@@ -1863,23 +1982,76 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.CrewEditor = void 0;
 
+var dompurify_1 = require("dompurify");
+
 var CrewEditor =
 /** @class */
 function () {
   function CrewEditor(querySelector) {
+    var _this = this;
+
     try {
       this.mainPoint = document.querySelector(querySelector);
+      this.table = this.mainPoint.querySelector("table");
+      this.editor = this.mainPoint.querySelector(".left");
+      this.loadCrewMembers();
+      window.addEventListener("storage", function (ev) {
+        if (ev.key == "crewMembers") {
+          _this.loadCrewMembers();
+        }
+      });
       console.log("Crew Editor: Initialised Successfully");
     } catch (e) {
-      throw new Error("Crew Editor: Unable to find master element for page");
+      console.error(e);
+      throw new Error("Crew Editor: An Error Occured");
     }
   }
+  /**
+   * Put data from list to table
+   */
+
+
+  CrewEditor.prototype.insertDataIntoTable = function () {
+    var _this = this;
+
+    for (var i = 1; i < this.table.rows.length - 1; i++) {
+      try {
+        this.table.deleteRow(i);
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+
+    console.log(this.crewMembers);
+    this.crewMembers.forEach(function (val, i) {
+      var row = _this.table.insertRow();
+
+      row.innerHTML = "\n\t\t\t\t<td>\n\t\t\t\t\t<span class=\"material-icons\">drag_indicator</span>\n\t\t\t\t\t<span class=\"separator\"></span>\n\t\t\t\t\t<span class=\"gender\">" + dompurify_1.sanitize(val.gender) + "</span>\n\t\t\t\t\t<span class=\"separator\">/</span>\n\t\t\t\t\t<span>" + dompurify_1.sanitize(val.ageGroup) + " " + (val.novice ? "Novice" : "") + "</span>\n\t\t\t\t</td>\n\t\t\t\t<td class=\"big\">\n\t\t\t\t\t" + dompurify_1.sanitize(val.name) + "\n\t\t\t\t</td>\n\t\t\t";
+      row.setAttribute("draggable", "true");
+      row.setAttribute("data-id", val.id.toString());
+      row.setAttribute("data-index", i.toString());
+    });
+  };
+  /**
+   * Load Crew members
+   */
+
+
+  CrewEditor.prototype.loadCrewMembers = function () {
+    if (localStorage.getItem('crewMembers') != null) {
+      this.crewMembers = JSON.parse(atob(localStorage.getItem('crewMembers')));
+    } else {
+      this.crewMembers = [];
+    }
+
+    this.insertDataIntoTable();
+  };
 
   return CrewEditor;
 }();
 
 exports.CrewEditor = CrewEditor;
-},{}],"crew-display.ts":[function(require,module,exports) {
+},{"dompurify":"../node_modules/dompurify/dist/purify.js"}],"crew-display.ts":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2077,13 +2249,29 @@ function () {
  */
 
 
-function navigateClass(pathClass, wrapper, indicator) {
+function navigateClass(pathClass, wrapper, indicator, updateCallback) {
+  // const pagesById = [
+  // 	document.querySelector("#crew-display"),
+  // 	document.querySelector("#crew-editor"),
+  // 	document.querySelector("#member-editor")
+  // ];
   if (pathClass == activeRouteClass) return;
   wrapper.classList.remove("member-editor", "crew-editor", "crew-display");
   indicator.classList.remove("member-editor", "crew-editor", "crew-display");
   wrapper.classList.add(pathClass);
   indicator.classList.add(pathClass);
-  activeRouteClass = pathClass;
+  activeRouteClass = pathClass; // pagesById.forEach((val) => {
+  // 	console.log(val);
+  // 	if (val.id != pathClass) {
+  // 		val.classList.add("hidden");
+  // 	} else if (val.id == pathClass) {
+  // 		val.classList.remove("hidden");
+  // 	}
+  // });
+
+  if (!!updateCallback) {
+    updateCallback();
+  }
 }
 
 var activeRouteClass, router;
@@ -2126,13 +2314,11 @@ var innit = function innit() {
   }
 
   try {
-    memberEditor = new member_editor_1.MemberEditor(".page.member-editor");
-    crewEditor = new crew_editor_1.CrewEditor(".page.crew-editor");
-    crewDisplay = new crew_display_1.CrewDisplay(".page.crew-display");
+    memberEditor = new member_editor_1.MemberEditor(".page#member-editor");
+    crewEditor = new crew_editor_1.CrewEditor(".page#crew-editor");
+    crewDisplay = new crew_display_1.CrewDisplay(".page#crew-display");
   } catch (error) {
-    console.error({
-      error: error
-    });
+    console.error("An Error Occured", error);
   } // create router instance
 
 
@@ -2142,7 +2328,7 @@ var innit = function innit() {
   }, [{
     path: 'member-editor',
     callback: function callback() {
-      return navigateClass('member-editor', main, indicator);
+      return navigateClass('member-editor', main, indicator, memberEditor.update);
     }
   }, {
     path: 'crew-editor',
@@ -2218,7 +2404,7 @@ document.addEventListener('DOMContentLoaded', innit); // ███████�
 // [0]
 // [0] 17:29:15 - Found 0 errors.Watching for file changes.
 // - Compiler, i guess
-},{"./member-editor":"member-editor.ts","./crew-editor":"crew-editor.ts","./crew-display":"crew-display.ts"}],"../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"./member-editor":"member-editor.ts","./crew-editor":"crew-editor.ts","./crew-display":"crew-display.ts"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -2246,7 +2432,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61963" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50680" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -2422,5 +2608,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../../usr/local/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","app.ts"], null)
-//# sourceMappingURL=/app.c61986b1.js.map
+},{}]},{},["../node_modules/parcel-bundler/src/builtins/hmr-runtime.js","app.ts"], null)
+//# sourceMappingURL=app.c61986b1.js.map

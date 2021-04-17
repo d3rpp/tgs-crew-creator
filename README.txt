@@ -23,13 +23,6 @@ In order to compile it in watch mode, open a terminal or command prompt and run
 ```bash
 npm run watch
 ```
-
-**note**
-This compilation process requires:
-1. php to be installed, this is used as a web server
-2. port 1234 to be open
-it will build without these but the watch server requires both of these conditions
-
 this will run the compiler in watch mode, any changes will be reflected immediately
 
 **NOTE:** this will only work for MacOS and Linux, if you use windows, run `./.compile.bat` (untested)
@@ -41,3 +34,4 @@ this will run the compiler in watch mode, any changes will be reflected immediat
 in order to deploy this app to production the code should be served with the `dist` folder as the root directory
 
 you should also set the production server to ignore `dotfiles`
+

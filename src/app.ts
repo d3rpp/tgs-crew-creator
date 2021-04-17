@@ -156,7 +156,14 @@ class Router {
 /**
  * Navigate between pages
  */
-function navigateClass(pathClass: string, wrapper: HTMLElement, indicator: HTMLElement) {
+function navigateClass(pathClass: string, wrapper: HTMLElement, indicator: HTMLElement, updateCallback?: Function) {
+
+	// const pagesById = [
+	// 	document.querySelector("#crew-display"),
+	// 	document.querySelector("#crew-editor"),
+	// 	document.querySelector("#member-editor")
+	// ];
+
 	if (pathClass == activeRouteClass) return;
 
 	wrapper.classList.remove("member-editor", "crew-editor", "crew-display");
@@ -166,6 +173,19 @@ function navigateClass(pathClass: string, wrapper: HTMLElement, indicator: HTMLE
 	indicator.classList.add(pathClass);
 
 	activeRouteClass = pathClass;
+
+	// pagesById.forEach((val) => {
+	// 	console.log(val);
+	// 	if (val.id != pathClass) {
+	// 		val.classList.add("hidden");
+	// 	} else if (val.id == pathClass) {
+	// 		val.classList.remove("hidden");
+	// 	}
+	// });
+
+	if (!!updateCallback) {
+		updateCallback();
+	}
 }
 
 var activeRouteClass: string, router: Router;
@@ -181,8 +201,8 @@ var crewDisplay: CrewDisplay;
  * in a brittish way tho
  */
 const innit = (): void => {
-	var main: HTMLElement, indicator; HTMLElement;
 
+	var main: HTMLElement, indicator; HTMLElement;
 	if (!('import' in document.createElement('link'))) {
 		console.warn("HTML IMPORT NOT ENABLED");
 	}
@@ -209,18 +229,18 @@ const innit = (): void => {
 	}
 
 	try {
-		memberEditor = new MemberEditor(".page.member-editor");
-		crewEditor = new CrewEditor(".page.crew-editor");
-		crewDisplay = new CrewDisplay(".page.crew-display");
+		memberEditor = new MemberEditor(".page#member-editor");
+		crewEditor = new CrewEditor(".page#crew-editor");
+		crewDisplay = new CrewDisplay(".page#crew-display");
 	} catch (error) {
-		console.error({ error });
+		console.error("An Error Occured", error);
 	}
 
 
 	// create router instance
 	router = new Router({ mode: 'hash', root: '/' },
 		[
-			{ path: 'member-editor', callback: () => navigateClass('member-editor', main, indicator) },
+			{ path: 'member-editor', callback: () => navigateClass('member-editor', main, indicator, memberEditor.update) },
 			{ path: 'crew-editor', callback: () => navigateClass('crew-editor', main, indicator) },
 			{ path: 'crew-display', callback: () => navigateClass('crew-display', main, indicator) },
 			{ path: '', callback: () => navigateClass('member-editor', main, indicator) }

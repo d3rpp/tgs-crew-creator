@@ -8,7 +8,7 @@
 
 	<!-- <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script> -->
 
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link crossorigin="anonymous" href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 	<link rel="stylesheet" href="./style/style.scss">
 	<script crossorigin="anonymous"
@@ -28,17 +28,17 @@
 		<div class="right">
 			<ul>
 				<li>
-					<a href="/#/member-editor">
+					<a href="#/member-editor">
 						<p>Member Editor</p>
 					</a>
 				</li>
 				<li>
-					<a href="/#/crew-editor">
+					<a href="#/crew-editor">
 						<p>Crew Editor</p>
 					</a>
 				</li>
 				<li>
-					<a href="/#/crew-display">
+					<a href="#/crew-display">
 						<p>Crew Display</p>
 					</a>
 				</li>
@@ -55,7 +55,7 @@
 		 -->
 
 		<!-- #region Member Editor -->
-		<section class="page member-editor">
+		<section class="page" id="member-editor">
 			<div class="container">
 				<div class="left">
 					<div class="viewer">
@@ -97,8 +97,8 @@
 							<div class="select">
 								<select class="select-text gender" required>
 									<option value="" disabled selected></option>
-									<option value="M">M</option>
-									<option value="F">F</option>
+									<option value="M">&nbsp;&nbsp;M</option>
+									<option value="F">&nbsp;&nbsp;F</option>
 								</select>
 								<span class="select-highlight"></span>
 								<span class="select-bar"></span>
@@ -139,8 +139,19 @@
 
 		 -->
 		<!-- #region Crew Editor -->
-		<section class="page crew-editor">
-			<h1>Crew Editor</h1>
+		<section class="page" id="crew-editor">
+			<div class="left">
+				Editor
+			</div>
+			<div class="right">
+				<table>
+					<tr class="header">
+						<!-- <th class="small"></th> -->
+						<th>Gender/Age Group</th>
+						<th class="big">Name</th>
+					</tr>
+				</table>
+			</div>
 		</section>
 		<!-- #endregion -->
 
@@ -150,13 +161,11 @@
 
 		 -->
 		<!-- #region Crew Display -->
-		<section class="page crew-display">
+		<section class="page" id="crew-display">
 			<h1>Crew Display</h1>
 		</section>
 		<!-- #endregion -->
 	</main>
-
-	<div style="display: none;" hidden class="global-buffer">
 	</div>
 </body>
 

@@ -7,7 +7,7 @@
 	.container {
 		width: 100%;
 
-		padding: 0 32px;
+		padding: 0 0px 0px 32px;
 
 		display: flex;
 		flex-direction: row;
@@ -399,6 +399,8 @@
 		.table {
 			// border: 1px solid #f00;
 			overflow-y: auto;
+
+			padding-right: 32px;
 
 			// margin-top: 48px;
 

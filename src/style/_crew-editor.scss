@@ -1,3 +1,141 @@
-h1 {
-	color: white;
+& {
+	display: grid;
+	grid-template-columns: 2fr 1fr;
+
+	.right {
+		overflow-y: auto;
+
+		padding-right: 32px;
+
+		// margin-top: 48px;
+
+		width: 100%;
+		height: calc(100vh - 56px);
+
+		table {
+			margin: 32px 0;
+
+			width: 100%;
+			overflow-y: auto;
+			overflow-x: hidden;
+
+			tr {
+				display: flex;
+				flex-direction: row;
+
+				// overflo
+
+				text-align: left;
+
+				// height: 32px;
+
+				border: 0.5px solid white;
+
+				td {
+					.gender,
+					.separator {
+						width: 20px;
+						text-align: center;
+					}
+				}
+
+				th,
+				td {
+					padding: 0px 8px;
+
+					flex: 3;
+
+					display: flex;
+					// justify-content: center;
+					align-items: center;
+
+					// border: 1px solid white;
+					border: 0.5px solid white;
+
+					overflow: hidden;
+					white-space: nowrap;
+					flex-wrap: nowrap;
+				}
+
+				.actions {
+					display: flex;
+					justify-content: space-evenly;
+
+					button {
+						border: none;
+						background: transparent;
+						color: white;
+
+						cursor: pointer;
+					}
+				}
+
+				&.header {
+					background-color: #ffb511;
+					color: #002a37;
+
+					border-radius: 5px 5px 0 0;
+
+					height: 32px;
+				}
+
+				&:not(.header) {
+					color: white;
+					height: 45px;
+					// border: 0.5px solid white;
+
+					// &:before {
+					// 	// position: absolute;
+					// 	// left: 10px;
+					// 	// top: 50%;
+
+					// 	display: flex;
+					// 	justify-content: center;
+					// 	align-items: center;
+
+					// 	font-size: 18px;
+
+					// 	height: 45px;
+
+					// 	position: absolute;
+
+					// 	transform: translateX(-25px);
+
+					// 	cursor: move;
+
+					// 	content: "drag_indicator";
+					// 	font-family: "Material Icons";
+					// }
+				}
+
+				&.hidden {
+					display: none;
+				}
+
+				.big {
+					flex: 5;
+					text-align: left;
+
+					justify-content: left;
+				}
+				.small {
+					flex: 0.5;
+					text-align: center;
+					justify-content: center;
+				}
+
+				&:nth-child(even) {
+					background-color: lighten(#002a37, 2);
+				}
+
+				&:nth-child(odd):not(.header) {
+					background-color: lighten(#002a37, 4);
+				}
+			}
+
+			&:last-child {
+				border-radius: 0 0 5px 5px;
+			}
+		}
+	}
 }

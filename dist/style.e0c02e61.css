@@ -10,11 +10,13 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  scroll-behavior: smooth;
   font-family: "Roboto", sans-serif;
 }
 
 body {
   overflow: hidden;
+  background-color: #003241;
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -90,7 +92,6 @@ body header .right ul li:hover a {
   color: white;
 }
 body main {
-  background-color: #003241;
   width: 100%;
   height: 100%;
   padding-top: 56px;
@@ -114,18 +115,270 @@ body main.crew-display {
 body main section {
   width: 100vw !important;
   height: calc(100vh - var(--header-height));
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
   color: white;
+}
+body main #crew-editor {
+  display: flex;
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+body main #crew-editor:before {
+  content: "Crew Editor";
+  color: white;
+  position: absolute;
+  top: 80px;
+  left: calc(100vw + 32px);
+  width: 100vw;
+  font-size: xx-large;
+  font-weight: 100;
+}
+body main #crew-editor .left {
+  flex: 2;
+  height: 100%;
+  overflow-y: scroll;
+  margin-right: 12px;
+}
+body main #crew-editor .left .fab {
+  position: absolute;
+  bottom: 16px;
+  left: calc(100vw + 16px);
+  width: 64px;
+  height: 64px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
+  background-color: #ffb511;
+  font-size: 24px;
+  color: black;
+  box-shadow: #00000011 0px 0px 5px;
+  cursor: pointer;
+  transition: background-color 100ms ease;
+}
+body main #crew-editor .left .fab:hover {
+  background-color: #dd9800;
+}
+body main #crew-editor .left .selector {
+  position: absolute;
+  bottom: 32px;
+  height: 32px;
+  width: 576px;
+  left: calc(100vw + 144px);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+body main #crew-editor .left .selector.hidden {
+  display: none !important;
+}
+body main #crew-editor .left .selector button {
+  width: 108px;
+  border: none;
+  border-radius: 3px;
+  background-color: #ffb511;
+  color: black;
+}
+body main #crew-editor .left .selector button:active {
+  color: white;
+}
+body main #crew-editor .left .fab,
+body main #crew-editor .left .selector {
+  z-index: 43829;
+}
+body main #crew-editor .left .editor {
+  display: flex;
+  padding: 48px 0;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+body main #crew-editor .left .editor .empty-container {
+  position: absolute;
+  top: 0;
+  left: 100vw;
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-body main #crew-editor {
+body main #crew-editor .left .editor .empty-container .empty {
+  text-align: center;
+}
+body main #crew-editor .left .editor .item {
+  width: 70%;
+  background-color: #002531;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  margin: 24px auto;
+  border-radius: 5px;
+  border: 1px solid #757575;
+}
+body main #crew-editor .left .editor .item .topRow,
+body main #crew-editor .left .editor .item .middleRow {
+  width: 100%;
+  padding: 8px;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+}
+body main #crew-editor .left .editor .item .topRow .input,
+body main #crew-editor .left .editor .item .middleRow .input {
+  position: relative;
+  margin: 8px 8px;
+  margin-top: 24px !important;
+  height: 24px;
+  width: 100%;
+  /* LABEL ======================================= */
+  /* active state */
+  /* BOTTOM BARS ================================= */
+  /* HIGHLIGHTER ================================== */
+  /* active state */
+}
+body main #crew-editor .left .editor .item .topRow .input.name,
+body main #crew-editor .left .editor .item .middleRow .input.name {
+  width: 100%;
+}
+body main #crew-editor .left .editor .item .topRow .input input,
+body main #crew-editor .left .editor .item .middleRow .input input {
+  font-size: 18px;
+  padding: 10px 10px 10px 5px;
+  display: block;
+  width: 100%;
+  border: none;
+  border-radius: 3px;
+  border-bottom: 1px solid #757575;
+  background-color: transparent;
+  color: white;
+}
+body main #crew-editor .left .editor .item .topRow .input input:focus,
+body main #crew-editor .left .editor .item .middleRow .input input:focus {
+  outline: none;
+}
+body main #crew-editor .left .editor .item .topRow .input input:focus ~ label, body main #crew-editor .left .editor .item .topRow .input input:valid ~ label,
+body main #crew-editor .left .editor .item .middleRow .input input:focus ~ label,
+body main #crew-editor .left .editor .item .middleRow .input input:valid ~ label {
+  top: -20px;
+  font-size: 14px;
+}
+body main #crew-editor .left .editor .item .topRow .input input:focus ~ .bar:before, body main #crew-editor .left .editor .item .topRow .input input:focus ~ .bar:after,
+body main #crew-editor .left .editor .item .middleRow .input input:focus ~ .bar:before,
+body main #crew-editor .left .editor .item .middleRow .input input:focus ~ .bar:after {
+  width: 50%;
+}
+body main #crew-editor .left .editor .item .topRow .input input:focus ~ .highlight,
+body main #crew-editor .left .editor .item .middleRow .input input:focus ~ .highlight {
+  animation: inputHighlighter 0.3s ease;
+}
+body main #crew-editor .left .editor .item .topRow .input label,
+body main #crew-editor .left .editor .item .middleRow .input label {
+  color: #fff;
+  font-size: 16px;
+  font-weight: normal;
+  position: absolute;
+  pointer-events: none;
+  left: 8px;
+  top: 10px;
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
+}
+body main #crew-editor .left .editor .item .topRow .input .bar,
+body main #crew-editor .left .editor .item .middleRow .input .bar {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+body main #crew-editor .left .editor .item .topRow .input .bar:before, body main #crew-editor .left .editor .item .topRow .input .bar:after,
+body main #crew-editor .left .editor .item .middleRow .input .bar:before,
+body main #crew-editor .left .editor .item .middleRow .input .bar:after {
+  content: "";
+  height: 2px;
+  width: 0;
+  bottom: 1px;
+  position: absolute;
+  background: transparent;
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
+}
+body main #crew-editor .left .editor .item .topRow .input .bar:before,
+body main #crew-editor .left .editor .item .middleRow .input .bar:before {
+  left: 50%;
+}
+body main #crew-editor .left .editor .item .topRow .input .bar:after,
+body main #crew-editor .left .editor .item .middleRow .input .bar:after {
+  right: 50%;
+}
+body main #crew-editor .left .editor .item .topRow .input .highlight,
+body main #crew-editor .left .editor .item .middleRow .input .highlight {
+  position: absolute;
+  height: 60%;
+  width: 100%;
+  top: 25%;
+  left: 0;
+  pointer-events: none;
+  opacity: 0.5;
+}
+body main #crew-editor .left .editor .item .names {
+  border-top: 1px solid #757575;
+  border-bottom: 1px solid #757575;
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-gap: 24px;
+  width: 90%;
+  padding: 24px 24px;
+  margin: 24px auto;
+}
+body main #crew-editor .left .editor .item .names.single {
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+}
+body main #crew-editor .left .editor .item .names.single div {
+  margin: auto auto;
+}
+body main #crew-editor .left .editor .item .names.double {
+  grid-template-rows: 1fr;
+  grid-template-columns: 1fr 1fr;
+}
+body main #crew-editor .left .editor .item .names.double div {
+  margin: auto auto;
+}
+body main #crew-editor .left .editor .item .names.quad.coxless {
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr;
+}
+body main #crew-editor .left .editor .item .names.quad.coxed {
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+body main #crew-editor .left .editor .item .names.octuple {
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+body main #crew-editor .left .editor .item .names .droppable {
+  border: 1px solid #e5e5e533;
+  border-radius: 5px;
+  height: 72px;
+  background-color: transparent;
+  transition: background-color 100ms ease;
+  margin: 0;
+}
+body main #crew-editor .left .editor .item .names .droppable.hovered {
+  background-color: #00000011;
+}
+body main #crew-editor .left .editor .item .names div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
 }
 body main #crew-editor .right {
+  flex: 1;
   overflow-y: auto;
   padding-right: 32px;
   width: 100%;
@@ -589,6 +842,10 @@ body main #member-editor .container .table table:last-child {
     width: 0;
     background: transparent;
   }
+}
+
+.hidden {
+  display: none;
 }
 
 /**

@@ -1,5 +1,4 @@
 import { AgeGroup, CrewMember, CrewMemberInterface, Gender } from "./types";
-import { sanitize } from 'dompurify';
 
 type Validation = "name" | "gender" | "ageGroup" | undefined;
 
@@ -33,7 +32,7 @@ class MemberEditor {
 
 	buffer!: CrewMemberInterface;
 
-	data!: Array<CrewMember>;
+	data!: CrewMember[];
 
 	private testAgeGroups = ["U15", "U16", "U17", "U18"]
 
@@ -47,11 +46,11 @@ class MemberEditor {
 		return Math.random().toString(36).substr(2, length);
 	}
 
-	public update() {
-		this.load();
-		this.insertDataIntoTable();
-		this.updateViewer();
-	}
+	// public update() {
+	// 	this.load();
+	// 	this.insertDataIntoTable();
+	// 	this.updateViewer();
+	// }
 
 	constructor(querySelector: string) {
 
@@ -62,7 +61,7 @@ class MemberEditor {
 			name: "",
 			gender: "",
 			ageGroup: "",
-			novice: null
+			novice: undefined
 		}
 		// main point of the element
 		// prevents clashes between tabs, as long as i use this in place of `document`;
@@ -75,34 +74,34 @@ class MemberEditor {
 		// Get all of the elements
 		try {
 			this.table = this.mainPoint.querySelector("table")!;
-			this.editor = this.mainPoint.querySelector('.editor');
-			this.viewer = this.mainPoint.querySelector('.viewer');
+			this.editor = this.mainPoint.querySelector('.editor')!;
+			this.viewer = this.mainPoint.querySelector('.viewer')!;
 
-			this.name = this.editor.querySelector("input.nameInput");
+			this.name = this.editor.querySelector("input.nameInput")!;
 			this.name.addEventListener('input', () => {
-				this.buffer.name = sanitize(this.name.value);
+				this.buffer.name = (this.name.value);
 				this.updateViewer();
 			});
 
-			this.ageGroupSelect = this.editor.querySelector("select.age-group");
+			this.ageGroupSelect = this.editor.querySelector("select.age-group")!;
 			this.ageGroupSelect.addEventListener('input', () => {
 				this.buffer.ageGroup = this.ageGroupSelect.value as AgeGroup;
 				this.updateViewer();
 			});
 
-			this.genderSelect = this.editor.querySelector("select.gender");
+			this.genderSelect = this.editor.querySelector("select.gender")!;
 			this.genderSelect.addEventListener('input', () => {
 				this.buffer.gender = this.genderSelect.value as Gender;
 				this.updateViewer();
 			});
 
-			this.noviceSwitch = this.editor.querySelector(".novice");
+			this.noviceSwitch = this.editor.querySelector(".novice")!;
 			this.noviceSwitch.addEventListener('change', () => {
 				this.buffer.novice = this.noviceSwitch.checked;
 				this.updateViewer();
 			});
 
-			this.clearButton = this.editor.querySelector(".buttons button.clear");
+			this.clearButton = this.editor.querySelector(".buttons button.clear")!;
 			this.clearButton.addEventListener('mouseup', () => {
 				// this.buffer = {};
 				this.resetBuffer();
@@ -110,7 +109,7 @@ class MemberEditor {
 				this.updateViewer();
 			});
 
-			this.submitButton = this.editor.querySelector(".buttons button.submit");
+			this.submitButton = this.editor.querySelector(".buttons button.submit")!;
 			this.submitButton.addEventListener('mouseup', () => {
 				if (!this.confirmAndSubmitDataFromForm()) {
 					alert("There was an error");
@@ -129,7 +128,10 @@ class MemberEditor {
 			} else {
 				this.load();
 			}
+
+			this.sort(this.data);
 		} catch (error) {
+			console.error(error);
 			throw new Error("Member Editor: Failed when loading stuff or getting test data");
 		}
 
@@ -149,7 +151,7 @@ class MemberEditor {
 	 * Dump the buffere element to the console
 	 */
 	private dumpBuffer() {
-		console.warn({ ...this.buffer });
+		console.warn("CURRENT BUFFER IN MEMBER EDITOR", this.buffer);
 	}
 
 	/**
@@ -182,12 +184,12 @@ class MemberEditor {
 
 						this.dumpBuffer();
 
-						this.buffer.id = +button.getAttribute("data-id");
+						this.buffer.id = +button.getAttribute("data-id")!;
 						this.pushInputToBuffer();
 
 						this.loadDataIntoInputForm(
 							// Welcome to casting strings to numbers in typescript
-							+button.getAttribute('data-index')
+							+button.getAttribute('data-index')!
 						);
 
 						this.dumpBuffer();
@@ -199,10 +201,10 @@ class MemberEditor {
 
 					button.addEventListener('click', () => {
 
-						let tmp: CrewMember = this.data[+button.getAttribute('data-index')];
+						let tmp: CrewMember = this.data[+button.getAttribute('data-index')!];
 
-						if (confirm('are you sure you\'d like to delete ' + sanitize(tmp.name))) {
-							this.data.splice(+button.getAttribute('data-index'), 1);
+						if (confirm('are you sure you\'d like to delete ' + (tmp.name))) {
+							this.data.splice(+button.getAttribute('data-index')!, 1);
 
 							this.save();
 							this.insertDataIntoTable();
@@ -246,7 +248,7 @@ class MemberEditor {
 	 */
 	private updateViewer() {
 		// this.dumpBuffer();
-		this.viewer.innerHTML = sanitize(
+		this.viewer.innerHTML = (
 			(!!this.buffer.gender ? this.buffer.gender : 'Gender') +
 			" | " +
 			(!!this.buffer.ageGroup ? this.buffer.ageGroup : 'Age Group') +
@@ -262,11 +264,14 @@ class MemberEditor {
 	 * @param index index of a CrewMember object in the data array
 	 */
 	private loadDataIntoInputForm(index: number) {
-		this.name.value = sanitize(this.data[index].name);
+		this.name.value = (this.data[index].name);
 		this.noviceSwitch.checked = this.data[index].novice;
-		this.ageGroupSelect.value = sanitize(this.data[index].ageGroup);
-		this.genderSelect.value = sanitize(this.data[index].gender);
+		this.ageGroupSelect.value = (this.data[index].ageGroup);
+		this.genderSelect.value = (this.data[index].gender);
 		// this.
+
+		this.pushInputToBuffer();
+		this.submitButton.innerHTML = `Update`
 	}
 
 	/**
@@ -293,7 +298,7 @@ class MemberEditor {
 		this.name.value = !!this.buffer.name ? this.buffer.name : "";
 		this.ageGroupSelect.value = !!this.buffer.ageGroup ? this.buffer.ageGroup : "";
 		this.genderSelect.value = !!this.buffer.gender ? this.buffer.gender : "";
-		this.noviceSwitch.checked = this.buffer.novice;
+		this.noviceSwitch.checked = this.buffer.novice ? this.buffer.novice : false;
 	}
 
 	/**
@@ -302,28 +307,19 @@ class MemberEditor {
 	private initTestData() {
 		this.data = [];
 
-		for (var i: number = 0; i < 100; i++) {
+		const amountOfData = 100;
+
+		for (var i: number = 0; i < amountOfData; i++) {
 			this.addCrewMember({
 				name: this.testRandomNameGenerator(Math.floor(Math.random() * 7) + 5),
 				gender: (!!(Math.round(Math.random())) ? "M" : "F") as Gender,
 				ageGroup: this.testAgeGroups[(Math.floor(Math.random() * 4))] as AgeGroup,
 				novice: !!(Math.round(Math.random())),
-				id: this.getUID()
+				id: this.createUID()
 			});
 		}
-	}
 
-	/**
-	 * Generates a new Unique ID for an element
-	 */
-	private getUID() {
-		let tmp;
-
-		do {
-			tmp = Math.floor(Math.random() * 100000);
-		} while (this.idIsUsedforCrewMember(tmp))
-
-		return tmp;
+		console.log(this.data);
 	}
 
 	private pushInputToBuffer() {
@@ -339,19 +335,31 @@ class MemberEditor {
 	 * @param id The id of the element you'd like to find the index of
 	 * @returns the index in this.data of the element with the id or `undefined` if not found
 	 */
-	private getIndexOfID(id: number): number {
+	private getIndexOfID(id: number): number | null {
 		let i: number = -1;
 
-		if (id < 0) return undefined;
+		if (id < 0) return null;
 
-		this.data.forEach((val, index) => {
+		this.data.some((val: CrewMember, index: number) => {
 			if (val.id == id) {
 				i = index;
-				return i;
+				return true;
 			}
-		});
+
+			return false;
+		})
 
 		return i;
+	}
+
+	private createUID() {
+		for (let i = 0; i < 10000; i++) {
+			if (!this.data.some((val) => {
+				return val.id == i
+			})) {
+				return i
+			}
+		}
 	}
 
 	/**
@@ -366,28 +374,33 @@ class MemberEditor {
 			this.dumpBuffer();
 			return false;
 		}
-		if (!confirm(`Are you sure that you'd like to add ${this.buffer.gender} ${this.buffer.ageGroup}${this.buffer.novice ? " Novice" : ""} named ${this.buffer.name}`)) return false;
-		if (this.buffer.id < 0) {
+		if (this.buffer.id! == -1) {
 
+			if (!confirm(`Are you sure that you'd like to add ${this.buffer.gender} ${this.buffer.ageGroup}${this.buffer.novice ? " Novice" : ""} named ${this.buffer.name}`)) return false;
 
-			this.buffer.id = this.getUID();
+			this.buffer.id = this.createUID();
 
 			// this.buffer.id = -1;
 			this.addCrewMember(this.buffer);
 
 			this.save();
-			this.insertDataIntoTable();
-
-			return true
 		} else {
-			this.data.findIndex((val) => {
-				if (val.id == this.buffer.id) {
-					return true;
-				}
-			});
+
+			if (!confirm(`Are you sure that you'd like to update ${this.buffer.gender} ${this.buffer.ageGroup}${this.buffer.novice ? " Novice" : ""} named ${this.buffer.name}`)) return false;
+
+			let index = this.getIndexOfID(this.buffer.id!);
+
+			this.data[index!] = new CrewMember(this.buffer);
 
 			this.save();
 		}
+
+		this.submitButton.innerHTML = `Save`;
+
+		this.insertDataIntoTable();
+		return true
+
+
 	}
 
 	/**
@@ -397,13 +410,36 @@ class MemberEditor {
 	 * @param member the member to be added
 	 */
 	private addCrewMember(member: CrewMemberInterface) {
-		if (this.idIsUsedforCrewMember(member.id)) {
-			this.data[this.getIndexOfID(member.id)] = new CrewMember(member);
+		if (this.idIsUsedforCrewMember(member.id!)) {
+			this.data[this.getIndexOfID(member.id!)!] = new CrewMember(member);
 		} else {
 			this.data.push(new CrewMember(member));
 		}
 
 		this.save();
+	}
+
+	private sort(list: CrewMember[]) {
+
+		let ageGroups = ["U15", "U16", "U17", "U18"];
+
+		list.sort((a: CrewMember, b: CrewMember) => {
+			if (a.gender == "M" && b.gender == "F") return -1;
+			if (a.gender == "F" && b.gender == "M") return 1;
+			if (a.gender == b.gender) return 0;
+		});
+
+		list.sort((a: CrewMember, b: CrewMember) => {
+			if (a.novice && !b.novice) return 1;
+			if (!a.novice && b.novice) return -1;
+			return 0;
+		});
+
+		list.sort((a: CrewMember, b: CrewMember) => {
+			return ageGroups.indexOf(b.ageGroup) - ageGroups.indexOf(a.ageGroup);
+		});
+
+		return list;
 	}
 
 	/**
@@ -412,7 +448,11 @@ class MemberEditor {
 	 * allows for persistent data usage
 	 */
 	private save() {
+		this.sort(this.data);
+
 		localStorage.setItem("crewMembers", btoa(JSON.stringify(this.data)));
+
+		window.dispatchEvent(new Event("crewMembersEdited"));
 	}
 
 	/**
@@ -426,6 +466,8 @@ class MemberEditor {
 		} else {
 			this.data = [];
 		}
+
+		this.save();
 	}
 
 	/**
@@ -433,21 +475,22 @@ class MemberEditor {
 	 * it isnt the most efficient way to do it but it works
 	 */
 	insertDataIntoTable() {
-		for (let i: number = 1; i < this.table.rows.length - 1; i++) {
-			try {
-				this.table.deleteRow(i);
-			} catch (e) {
-				console.warn(e);
-			}
-		}
+		this.table.innerHTML = `
+			<tr class="header">
+				<th>Gender</th>
+				<th>Age Group</th>
+				<th class="big">Name</th>
+				<th>Actions</th>
+			</tr>
+		`;
 
 		this.data.forEach((val: CrewMember, i: number) => {
 			let row = this.table.insertRow();
 
 			row.innerHTML = (`
-				<td>${sanitize(val.gender)}</td>
-				<td>${sanitize(val.ageGroup)} ${val.novice ? "Novice" : ""}</td>
-				<td class="big">${sanitize(val.name)}</td>
+				<td>${(val.gender)}</td>
+				<td>${(val.ageGroup)} ${val.novice ? "Novice" : ""}</td>
+				<td class="big">${(val.name)}</td>
 				<td class="actions">
 					<button class="edit material-icons" data-index="${i}" data-id="${val.id}">edit</button>
 					<button class="delete material-icons" data-index="${i}" data-id="${val.id}">delete</button>

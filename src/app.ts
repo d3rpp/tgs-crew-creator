@@ -1,4 +1,3 @@
-import { MakeHttpRequestAsync } from "./request";
 import { MemberEditor } from './member-editor';
 import { CrewEditor } from "./crew-editor";
 import { CrewDisplay } from "./crew-display";
@@ -201,11 +200,10 @@ var crewDisplay: CrewDisplay;
  * in a brittish way tho
  */
 const innit = (): void => {
-
-	var main: HTMLElement, indicator; HTMLElement;
-	if (!('import' in document.createElement('link'))) {
-		console.warn("HTML IMPORT NOT ENABLED");
-	}
+	var main: HTMLElement, indicator: HTMLElement;
+	// if (!('import' in document.createElement('link'))) {
+	// 	console.warn("HTML IMPORT NOT ENABLED");
+	// }
 
 	// window.onstorage = (() => { console.log(window.localStorage) });
 
@@ -240,7 +238,7 @@ const innit = (): void => {
 	// create router instance
 	router = new Router({ mode: 'hash', root: '/' },
 		[
-			{ path: 'member-editor', callback: () => navigateClass('member-editor', main, indicator, memberEditor.update) },
+			{ path: 'member-editor', callback: () => navigateClass('member-editor', main, indicator) },
 			{ path: 'crew-editor', callback: () => navigateClass('crew-editor', main, indicator) },
 			{ path: 'crew-display', callback: () => navigateClass('crew-display', main, indicator) },
 			{ path: '', callback: () => navigateClass('member-editor', main, indicator) }
@@ -248,7 +246,6 @@ const innit = (): void => {
 	);
 
 	// if (!('ontouchstart' in document.documentElement)) {
-
 	// 	// Quality of Life Feature
 	// 	// also technically an advanced feature
 	// 	// allows page switching in tabs with arrow keys

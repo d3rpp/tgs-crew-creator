@@ -1,6 +1,9 @@
 
-import { BoatSize, CrewMember } from "../types";
+import { AgeGroup, BoatSize, CrewMember, Gender } from "../types";
 
+/**
+ * Config Interface
+ */
 interface CrewEditorItemConfig {
 	size: BoatSize;
 	coxed: boolean;
@@ -9,8 +12,8 @@ interface CrewEditorItemConfig {
 // Warnings and Errors
 // The Editor will refuse to save until all errors are cleared, but it will accept the data if there is just a warning;
 // The Warnings just prevent coaches from accidental mistakes but sometimes mixed crews do happen during trainings so the crew will still save if this is the case
-type currentErrorInEditor = "Not All Seats Filled" | "No Coach" | "No Crew Name" | "Invalid Name" | "No Oars" | "No Boat Allocated" | "";
-type currentWarningInEditor = "Mixed Age Groups Detected" | "Mixed Genders Selected" | "";
+type currentErrorInEditor = "Not All Seats Filled" | "No Coach" | "No Crew Name" | "Invalid Name" | "No Oars" | "No Boat Allocated" | "Crew Type does not match size";
+type currentWarningInEditor = "Mixed Age Groups Detected" | "Mixed Genders Selected" | "Non-Novices in Novice Boat";
 
 /**
  * 	Serialised form of the Crew Editor Item class, holds only the data we need
@@ -58,6 +61,10 @@ class CrewEditorItem {
 
 	oars: string = "";
 	_oarsInput: HTMLInputElement;
+
+	errorBox: HTMLElement;
+
+	deleteButton: HTMLElement;
 
 	seatCount: BoatSize = 0;
 	coxed: boolean;
@@ -197,23 +204,134 @@ class CrewEditorItem {
 	 */
 	private validate(): boolean {
 
-		// MMMMMMMMMM REGEX
-		let crewNameRegex = /(M|W|G|B) (U|N)((1)(5|6|7|8)) ((1|2|4|8)X?(\+|-))/;
+		this.currentError = undefined;
+		this.currentWarning = undefined;
 
-		if (this.crewName == "") {
+		// MMMMMMMMMM REGEX
+		// Matches boat crews
+		// B U18 8+ is valid in this bs
+		let crewNameRegex = /(M|W|G|B) (U|N)((1)(5|6|7|8)) ((1|2|4|8)X?(\+|-)?)/;
+
+		if (this.crewName.trim() == "") {
 			this.currentError = "No Crew Name";
+			return false;
 		}
 
-		if (!this.crewName.toUpperCase().match(crewNameRegex)) {
+		if (!this.crewName.trim().toUpperCase().match(crewNameRegex)) {
 			this.currentError = "Invalid Name"
 			return false;
 		}
 
+		if (this.coachName.trim() == "") {
+			this.currentError = "No Coach";
+			return false;
+		}
+
+		if (this.boatName.trim() == "") {
+			this.currentError = "No Boat Allocated";
+			return false;
+		}
+
+		if (this.oars.trim() == "") {
+			this.currentError = "No Oars";
+			return false;
+		}
+
+		this.seats.forEach((val) => {
+			if (val == undefined) { this.currentError = "Not All Seats Filled"; return false; }
+		});
+
+		// OH BOY, Time to validate the CREWS;
+
+		if (this.crewName.trim().toUpperCase().match(crewNameRegex)) {
+
+			let ageGroup: AgeGroup;
+			let gender: Gender;
+			let boatSize: BoatSize;
+			let novice: boolean;
+
+			let c = this.crewName.trim().toUpperCase();
+
+			if (c.match(/(8X?\+)/)) boatSize = 8;
+			else if (c.match(/(4X?(\+|-))/)) boatSize = 4;
+			else if (c.match(/(2X?-?)/)) boatSize = 2;
+			else if (c.match(/(1X-?)/)) boatSize = 1;
+			else { this.currentError = "Invalid Name"; return false; }
+
+			if (boatSize != this.seatCount) { this.currentError = "Crew Type does not match size"; return false; }
+
+			if (c.match(/((U|N)18)/)) ageGroup = "U18";
+			else if (c.match(/((U|N)17)/)) ageGroup = "U17";
+			else if (c.match(/((U|N)16)/)) ageGroup = "U16";
+			else if (c.match(/((U|N)15)/)) ageGroup = "U15";
+			else { this.currentError = "Invalid Name"; return false; }
+
+			if (c.match(/(M|B)/)) gender = "M";
+			else if (c.match(/(G|W)/)) gender = "F";
+			else { this.currentError = "Invalid Name"; return false; }
+
+			if (c.match(/(N)(1)(5|6|7|8)/)) novice = true;
+			else if (c.match(/(U)(1)(5|6|7|8)/)) novice = false;
+			else { this.currentError = "Invalid Name"; return false }
+
+			this.seats.forEach((val: CrewMember, index: number) => {
+				let cox: boolean = false;
+
+				if (index == this.seatCount && this.coxed) {
+					cox = true
+				}
+
+				if (novice && !val.novice && !cox) {
+					this.currentWarning = "Non-Novices in Novice Boat";
+				}
+			});
+
+			this.seats.forEach((val: CrewMember, index: number) => {
+
+				let cox: boolean = false;
+
+				if (index == this.seatCount && this.coxed) {
+					cox = true
+				}
+
+				if (val != undefined && val != null && !cox) {
+					if (val.ageGroup != ageGroup) {
+
+						// console.info(`${val.name} is a ${val.ageGroup} ${val.gender}, the age group of this boat is ${ageGroup}`)
+
+						this.currentWarning = "Mixed Age Groups Detected";
+					}
+					else if (val.gender != gender) {
+						// console.info(`${val.name} is a ${val.ageGroup} ${val.gender}, the gender of this boat is ${gender}`)
+						this.currentWarning = "Mixed Genders Selected";
+					}
+				}
+			});
+			// All of that just for warnings
+			// and some more error detection i guess but the situations wont pop up
+			// if they do, something is VERY wrong
+		}
+
+
 		return true;
+	}
+
+
+
+	private updateErrorsAndWarnings() {
+		if (this.currentError != undefined) {
+			this.errorBox.innerHTML = `<span style="color:#ff5555;">Error: ${this.currentError}</span>`;
+		} else if (this.currentWarning != undefined) {
+			this.errorBox.innerHTML = `<span style="color:#ffff55;">Warning: ${this.currentWarning}</span>`;
+		} else {
+			this.errorBox.innerHTML = `<span style="color:#55ff55;">This is a Valid Crew</span>`;
+		}
 	}
 
 	/**
 	 * Initialises the inputs
+	 * 
+	 * also initialises the error box
 	 */
 	private initInputs(): void {
 		let m = this.masterElement;
@@ -223,32 +341,49 @@ class CrewEditorItem {
 			this._crewNameInput = m.querySelector("input.crew-type");
 			this._boatNameInput = m.querySelector("input.boat");
 			this._oarsInput = m.querySelector("input.oars");
+			this.errorBox = m.querySelector(".errors");
+			this.deleteButton = m.querySelector(".deleteButton span");
 		} catch (e: any) {
 			console.error("Error Initialising Inputs on Crew Editor Item", e);
 		}
 
+		this.validate();
+		this.updateErrorsAndWarnings();
+
 		try {
 			this._coachNameInput.addEventListener('input', () => {
 				this.coachName = this._coachNameInput.value;
+				this.validate();
+				this.updateErrorsAndWarnings();
 				this.save();
 			});
 			this._crewNameInput.addEventListener('input', () => {
 				this.crewName = this._crewNameInput.value;
+				this.validate();
+				this.updateErrorsAndWarnings();
 				this.save();
 			});
 			this._boatNameInput.addEventListener('input', () => {
 				this.boatName = this._boatNameInput.value;
+				this.validate();
+				this.updateErrorsAndWarnings();
 				this.save();
 			});
 			this._oarsInput.addEventListener('input', () => {
 				this.oars = this._oarsInput.value;
+				this.validate();
+				this.updateErrorsAndWarnings();
 				this.save();
+			});
+			this.deleteButton.addEventListener('click', () => {
+				if (!confirm("Are you sure you would like to delete this " + this.crewName)) return;
+				window.sessionStorage.setItem("crewToDelete", this.masterElement.getAttribute("data-index"))
+				this.parentElement.dispatchEvent(new Event("delete"))
 			});
 		} catch (e: any) {
 			console.error("Error Initilising Event Listeners on Crew Editor Item Inputs", e);
 		}
 	}
-
 	/**
 	 * React Style Render Function, just works
 	 */
@@ -317,7 +452,7 @@ class CrewEditorItem {
 			</div>
 			<div class="names ${sizeString} ${coxString}">
 
-			<!-- Every Boat has a Stroke Seat -->
+			<!-- Every Boat has a Stroke Seat, even  singles -->
 
 				<div class="droppable"
 					${!!this.seats[0] ? `
@@ -327,9 +462,6 @@ class CrewEditorItem {
 						data-age-group="${this.seats[0].ageGroup}
 						data-gender="${this.seats[0].gender}"
 					` : ``}>
-
-					${!!this.seats[0] ? this.seats[0].name : "Stroke"}
-
 				</div>
 
 
@@ -343,8 +475,6 @@ class CrewEditorItem {
 					data-age-group="${this.seats[1].ageGroup}
 					data-gender="${this.seats[1].gender}"
 					`: ``}>
-
-					${!!this.seats[1] ? this.seats[1].name : "2 Seat"}
 				</div>
 
 				<div class="droppable"
@@ -355,13 +485,11 @@ class CrewEditorItem {
 					data-age-group="${this.seats[2].ageGroup}
 					data-gender="${this.seats[2].gender}"
 					`: ``}>
-
-					${!!this.seats[2] ? this.seats[2].name : "3 Seat"}
 				</div>
-
 				`: ``}
 
 				${this.seatCount == 8 ? `
+
 				<div class="droppable"
 				${!!this.seats[3] ? `
 					data-id="${this.seats[3].id}" 
@@ -370,10 +498,8 @@ class CrewEditorItem {
 					data-age-group="${this.seats[3].ageGroup}
 					data-gender="${this.seats[3].gender}"
 					`: ``}>
-
-					${!!this.seats[3] ? this.seats[3].name : "4 Seat"}
 				</div>
-				
+
 				<div class="droppable"
 				${!!this.seats[4] ? `
 					data-id="${this.seats[4].id}" 
@@ -382,8 +508,6 @@ class CrewEditorItem {
 					data-age-group="${this.seats[4].ageGroup}
 					data-gender="${this.seats[4].gender}"
 					`: ``}>
-
-					${!!this.seats[4] ? this.seats[4].name : "5 Seat"}
 				</div>
 				
 				<div class="droppable"
@@ -394,8 +518,6 @@ class CrewEditorItem {
 					data-age-group="${this.seats[5].ageGroup}
 					data-gender="${this.seats[5].gender}"
 					`: ``}>
-
-					${!!this.seats[5] ? this.seats[5].name : "6 Seat"}
 				</div>
 				
 				<div class="droppable"
@@ -406,8 +528,6 @@ class CrewEditorItem {
 					data-age-group="${this.seats[6].ageGroup}
 					data-gender="${this.seats[6].gender}"
 					`: ``}>
-
-					${!!this.seats[6] ? this.seats[6].name : "7 Seat"}
 				</div>
 				`: ``} 
 
@@ -420,10 +540,7 @@ class CrewEditorItem {
 						data-age-group="${this.seats[this.seatCount - 2].ageGroup}
 						data-gender="${this.seats[this.seatCount - 2].gender}"
 					` : ``}>
-
-					${!!this.seats[this.seatCount - 2] ? this.seats[this.seatCount - 2].name : "Bow"}
-
-					</div>
+				</div>
 				` : ``}
 
 				${(this.seatCount == 2 || this.seatCount == 4 || this.seatCount == 8) && !this.coxed ? `
@@ -435,10 +552,7 @@ class CrewEditorItem {
 						data-age-group="${this.seats[this.seatCount - 1].ageGroup}
 						data-gender="${this.seats[this.seatCount - 1].gender}"
 					` : ``}>
-
-					${!!this.seats[this.seatCount - 1] ? this.seats[this.seatCount - 1].name : "Bow"}
-
-					</div>
+				</div>
 				` : ``}
 
 
@@ -452,12 +566,17 @@ class CrewEditorItem {
 						data-age-group="${this.seats[this.seatCount - 1].ageGroup}
 						data-gender="${this.seats[this.seatCount - 1].gender}"
 					` : ``}>
-
-					${!!this.seats[this.seatCount - 1] ? this.seats[this.seatCount - 1].name : "Cox"}
-
-					</div>
-
+				</div>
 				` : ``}
+			</div>
+			<div class="bottomRow">
+				<div class="errors">
+					
+				</div>
+				<span style="flex: 1 1 auto;"> </span>
+				<div class="deleteButton">
+					<span class="material-icons">delete</span>
+				</div>
 			</div>
 		`;
 
@@ -466,6 +585,8 @@ class CrewEditorItem {
 			if (this.seats[index] != undefined) {
 				val.innerHTML = `
 					<span class="name">${(this.seats[index].name)}</span>
+					&nbsp;
+					<span class="info">${this.seats[index].gender} ${this.seats[index].ageGroup} ${this.seats[index].novice ? "N" : ""}</span>
 				`;
 			}
 
@@ -478,13 +599,13 @@ class CrewEditorItem {
 				if (val.hasAttribute("data-id")) {
 					window.sessionStorage.setItem("returningCrewMember", val.getAttribute("data-id"));
 					this.parentElement.dispatchEvent(new Event("returningCrewMember"));
-					console.log("SESSION STORAGE SET");
+					// console.info("SESSION STORAGE SET");
 				}
 
 				try {
 
-					// console.log("GOT CREW MEMBER", JSON.parse(window.sessionStorage.getItem("draggedItem")));
-					console.log("GOT CREW MEMBER", JSON.parse(ev.dataTransfer.getData("data")));
+					// console.info("GOT CREW MEMBER", JSON.parse(window.sessionStorage.getItem("draggedItem")));
+					// console.info("GOT CREW MEMBER", JSON.parse(ev.dataTransfer.getData("data")));
 
 					// member = JSON.parse(window.sessionStorage.getItem("draggedItem")) as CrewMember;
 					member = JSON.parse(ev.dataTransfer.getData("data")) as CrewMember;
@@ -502,14 +623,18 @@ class CrewEditorItem {
 				val.setAttribute("data-default", val.innerHTML);
 
 				val.innerHTML = `
-					<span class="name">${(member.name)}</span>
+					<span class="name">${(member.name)}</span>&nbsp;
+					<span class="info">${member.gender} ${member.ageGroup} ${member.novice ? "N" : ""}</span>
 				`;
 
 				this.seats[index] = member;
 
 				window.sessionStorage.setItem("acceptedCrewMember", val.getAttribute("data-id")!);
 				this.parentElement.dispatchEvent(new Event("acceptedCrewMember"))
-				console.log("SESSION STORAGE SET");
+				// console.info("SESSION STORAGE SET");
+
+				this.validate();
+				this.updateErrorsAndWarnings();
 
 				this.save();
 
@@ -533,7 +658,7 @@ class CrewEditorItem {
 
 				window.sessionStorage.setItem("returningCrewMember", val.getAttribute("data-id"));
 				this.parentElement.dispatchEvent(new Event("returningCrewMember"));
-				console.log("SESSION STORAGE SET");
+				// console.info("SESSION STORAGE SET");
 
 				// BRUH MOMENT
 				this.seats[index] = undefined;
@@ -546,6 +671,9 @@ class CrewEditorItem {
 
 				val.innerHTML = val.getAttribute("data-default");
 
+				this.validate();
+				this.updateErrorsAndWarnings();
+
 				this.save();
 			}
 		});
@@ -553,6 +681,7 @@ class CrewEditorItem {
 		this.masterElement = (tmp);
 
 		this.initInputs();
+		this.updateErrorsAndWarnings();
 	}
 }
 

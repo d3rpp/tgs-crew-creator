@@ -53,25 +53,36 @@ class CrewEditor {
 			}
 
 			this.editor.addEventListener('returningCrewMember', () => {
-				console.log("RETURNING CREW MEMBER EVENT CAUGHT");
 
 				this.removeMemberFromUsedList(parseInt(window.sessionStorage.getItem("returningCrewMember")!));
 
 				window.sessionStorage.removeItem("returningCrewMember");
 			});
 
-			this.editor.addEventListener("acceptedCrewMember", () => {
-				console.log("ACCEPTED CREW MEMBER EVENT CAUGHT");
+			// this.editor.addEventListener('returningCrewMembers', () => {
+			// 	window.sessionStorage.getItem("returningMembers").split(',').forEach((val) => { this.removeMemberFromUsedList(parseInt(val)) });
+			// 	window.sessionStorage.removeItem('reurningMembers');
+			// });
 
+			this.editor.addEventListener("acceptedCrewMember", () => {
 				this.addMemberToUsedList(parseInt(window.sessionStorage.getItem("acceptedCrewMember")!));
 
 				window.sessionStorage.removeItem("acceptedCrewMember")
 			});
 
 			this.editor.addEventListener("save", () => {
-				console.log("SAVE EVENT CAUGHT");
 				this.saveAllCrews();
 			});
+
+			this.editor.addEventListener("delete", () => {
+
+				this.deleteCrew(parseInt(window.sessionStorage.getItem("crewToDelete")));
+
+				window.sessionStorage.removeItem("crewToDelete");
+				this.saveAllCrews();
+				this.renderAllCrews();
+				this.insertDataIntoTable();
+			})
 
 			window.addEventListener('crewMembersEdited', () => {
 				this.loadCrewMembers();
@@ -123,7 +134,7 @@ class CrewEditor {
 			});
 
 
-			console.log("Crew Editor: Initialised Successfully")
+			console.info("Crew Editor: Initialised Successfully")
 		} catch (e) {
 			console.error(e);
 			throw new Error("Crew Editor: An Error Occured");
@@ -137,11 +148,62 @@ class CrewEditor {
 
 		this.editor.innerHTML = ``;
 
-		this.crews.forEach((val: CrewEditorItem) => {
+		try {
+			if (this.crews.length == 0 || !this.crews) {
+				this.editor.innerHTML = `
+					<div class="empty-container">
+						<h1 class="empty">Click the + to make a crew</h1>
+					</div>
+				`;
+				return;
+			}
+		} catch (e: any) {
+			this.editor.innerHTML = `
+				<div class="empty-container">
+					<h1 class="empty">Click the + to make a crew</h1>
+				</div>
+			`;
+			return;
+		}
+
+		this.crews.forEach((val: CrewEditorItem, i: number) => {
 			val.render();
+
+			val.masterElement.setAttribute("data-index", i.toString());
 
 			this.editor.appendChild(val.masterElement);
 		});
+
+		this.saveAllCrews();
+	}
+
+	private deleteCrew(index: number) {
+		let tmp: CrewEditorItem[] = [];
+		// let 
+		let tmpToRemove: string[] = [];
+		let tmpUsed: string[] = [];
+
+		this.crews.forEach((val, i) => {
+			if (i == index) {
+				val.seats.forEach((val) => {
+					if (val != undefined && val != null) {
+						tmpToRemove.push(val.id.toString())
+					}
+				});
+			}
+			else { tmp.push(val); }
+		});
+
+		this.usedCrewMembers.forEach((val) => {
+			if (!tmpToRemove.includes(val)) {
+				tmpUsed.push(val)
+			}
+		});
+
+		this.crews = tmp;
+		this.usedCrewMembers = tmpUsed;
+
+		this.saveAllCrews();
 	}
 
 	/**
@@ -158,6 +220,7 @@ class CrewEditor {
 		});
 
 		window.localStorage.setItem("crews", btoa(JSON.stringify(serialisedOject)));
+		window.dispatchEvent(new Event("storage"));
 	}
 
 	/**
@@ -168,7 +231,7 @@ class CrewEditor {
 
 		if (!window.localStorage.getItem("crews")) return;
 
-		console.log(JSON.parse(atob(window.localStorage.getItem("crews"))));
+		// console.info(JSON.parse(atob(window.localStorage.getItem("crews"))));
 
 		this.crews = [];
 		let decodedLocalStorage = JSON.parse(atob(window.localStorage.getItem("crews"))) as CrewEditorSerialised[];
@@ -201,7 +264,7 @@ class CrewEditor {
 
 		this.insertDataIntoTable();
 
-		console.log(this.usedCrewMembers);
+		// console.info(this.usedCrewMembers);
 	}
 
 	/**
@@ -222,7 +285,7 @@ class CrewEditor {
 
 		this.insertDataIntoTable();
 
-		console.log(this.usedCrewMembers);
+		// console.info(this.usedCrewMembers);
 
 	}
 
@@ -257,7 +320,7 @@ class CrewEditor {
 	 */
 	private usedMembersListContains(id: number): boolean {
 
-		// console.log(this.usedCrewMembers);
+		// console.info(this.usedCrewMembers);
 
 		let tmp = false;
 
@@ -306,15 +369,15 @@ class CrewEditor {
 
 		// filtered = this.sort(filtered);
 
-		// console.log("FILTERED LIST LENGTH", filtered.length);
+		// console.info("FILTERED LIST LENGTH", filtered.length);
 
 		for (let i = 0; i < filtered.length; i++) {
 
 			let val = filtered[i];
 
 			// if (val == undefined) return;
-			if (this.usedMembersListContains(val.id)) {
-				console.log(val, "CONTAINS", val.id);
+			if (this.usedCrewMembers.includes(val.id.toString())) {
+				// console.info(val, "CONTAINS", val.id);
 			} else {
 				let row = this.table.insertRow();
 
@@ -344,7 +407,7 @@ class CrewEditor {
 					// window.sessionStorage.setItem("draggedItem", JSON.stringify(val));
 				}
 
-				// console.log("SUCCESSFULLY RENDERED ROW FOR", val.id);
+				// console.info("SUCCESSFULLY RENDERED ROW FOR", val.id);
 			}
 
 			// console.warn("FAILED TO RENDER ROW FOR", val.id);

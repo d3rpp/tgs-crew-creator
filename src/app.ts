@@ -174,7 +174,7 @@ function navigateClass(pathClass: string, wrapper: HTMLElement, indicator: HTMLE
 	activeRouteClass = pathClass;
 
 	// pagesById.forEach((val) => {
-	// 	console.log(val);
+	// 	console.info(val);
 	// 	if (val.id != pathClass) {
 	// 		val.classList.add("hidden");
 	// 	} else if (val.id == pathClass) {
@@ -205,11 +205,7 @@ const innit = (): void => {
 	// 	console.warn("HTML IMPORT NOT ENABLED");
 	// }
 
-	// window.onstorage = (() => { console.log(window.localStorage) });
-
-	window.addEventListener('storage', () => {
-		console.log(window.localStorage);
-	})
+	// window.onstorage = (() => { console.info(window.localStorage) });
 
 	try {
 		main = document.querySelector("main.wrapper")!;

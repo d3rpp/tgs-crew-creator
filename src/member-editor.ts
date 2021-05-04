@@ -141,7 +141,7 @@ class MemberEditor {
 
 		this.updateViewer();
 
-		console.log("Member Editor: Initialised Successfully");
+		console.info("Member Editor: Initialised Successfully");
 		// } catch (e) {
 		// 	throw new Error("Member Editor: " + e);
 		// }
@@ -319,7 +319,7 @@ class MemberEditor {
 			});
 		}
 
-		console.log(this.data);
+		// console.info(this.data);
 	}
 
 	private pushInputToBuffer() {
@@ -475,14 +475,7 @@ class MemberEditor {
 	 * it isnt the most efficient way to do it but it works
 	 */
 	insertDataIntoTable() {
-		this.table.innerHTML = `
-			<tr class="header">
-				<th>Gender</th>
-				<th>Age Group</th>
-				<th class="big">Name</th>
-				<th>Actions</th>
-			</tr>
-		`;
+		this.clearTable();
 
 		this.data.forEach((val: CrewMember, i: number) => {
 			let row = this.table.insertRow();
@@ -501,6 +494,17 @@ class MemberEditor {
 
 		// calls setup buttons afterwards to make the edit and delete buttons work
 		this.setupButtons();
+	}
+
+	clearTable() {
+		this.table.innerHTML = `
+			<tr class="header">
+				<th>Gender</th>
+				<th>Age Group</th>
+				<th class="big">Name</th>
+				<th>Actions</th>
+			</tr>
+		`;
 	}
 }
 

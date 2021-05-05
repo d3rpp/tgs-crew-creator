@@ -130,6 +130,7 @@ class Router {
 	 */
 	listen = () => {
 		clearInterval(this.globalInterval);
+		// @ts-ignore
 		this.globalInterval = setInterval(this.interval, 50);
 	};
 

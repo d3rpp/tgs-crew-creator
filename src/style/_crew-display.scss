@@ -1,6 +1,7 @@
 & {
 	padding: 64px;
 
+	overflow-x: hidden;
 	overflow-y: auto;
 
 	&:before {
@@ -72,6 +73,9 @@
 
 					span {
 						margin-left: 8px;
+						white-space: nowrap;
+						width: 100%;
+						overflow: hidden;
 					}
 				}
 			}

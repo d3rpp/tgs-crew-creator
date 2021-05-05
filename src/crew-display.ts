@@ -33,7 +33,7 @@ class CrewDisplay {
 
 	private renderCrews() {
 
-		console.log("RENDER CREW DISPLAY")
+		// console.log("RENDER CREW DISPLAY")
 
 		this.items = [];
 		this.mainPoint.innerHTML = `<div class="container"></div>`;

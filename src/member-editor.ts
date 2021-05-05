@@ -1,3 +1,4 @@
+import { isLabeledStatement, transpileModule } from "typescript";
 import { AgeGroup, CrewMember, CrewMemberInterface, Gender } from "./types";
 
 type Validation = "name" | "gender" | "ageGroup" | undefined;
@@ -112,7 +113,7 @@ class MemberEditor {
 			this.submitButton = this.editor.querySelector(".buttons button.submit")!;
 			this.submitButton.addEventListener('mouseup', () => {
 				if (!this.confirmAndSubmitDataFromForm()) {
-					alert("There was an error");
+					alert("There was an error" + this._val);
 				}
 				// this.buffer = {};
 				this.resetBuffer();
@@ -124,7 +125,9 @@ class MemberEditor {
 
 		try {
 			if (localStorage.getItem('crewMembers') == null) {
-				this.initTestData();
+				// this.initTestData();
+				this.data = [];
+				this.save();
 			} else {
 				this.load();
 			}
@@ -235,10 +238,6 @@ class MemberEditor {
 			this.dumpBuffer();
 			return false
 		};
-		if (!(this.buffer.novice == true || this.buffer.novice == false)) {
-			this.dumpBuffer();
-			return false
-		};
 
 		return true;
 	}
@@ -264,6 +263,7 @@ class MemberEditor {
 	 * @param index index of a CrewMember object in the data array
 	 */
 	private loadDataIntoInputForm(index: number) {
+		this.buffer.id = this.data[index].id;
 		this.name.value = (this.data[index].name);
 		this.noviceSwitch.checked = this.data[index].novice;
 		this.ageGroupSelect.value = (this.data[index].ageGroup);
@@ -352,14 +352,22 @@ class MemberEditor {
 		return i;
 	}
 
-	private createUID() {
-		for (let i = 0; i < 10000; i++) {
-			if (!this.data.some((val) => {
-				return val.id == i
-			})) {
-				return i
-			}
+	createUID(): number {
+		let ids: number[] = [];
+		let valid: boolean = false;
+		let i = 0;
+
+		this.data.forEach((val: CrewMember) => {
+			ids.push(val.id);
+		});
+
+		while (!valid) {
+			i++;
+
+			if (!ids.includes(i)) valid = true;
 		}
+
+		return i;
 	}
 
 	/**
@@ -379,6 +387,8 @@ class MemberEditor {
 			if (!confirm(`Are you sure that you'd like to add ${this.buffer.gender} ${this.buffer.ageGroup}${this.buffer.novice ? " Novice" : ""} named ${this.buffer.name}`)) return false;
 
 			this.buffer.id = this.createUID();
+
+			this.buffer.novice = this.buffer.novice ? true : false;
 
 			// this.buffer.id = -1;
 			this.addCrewMember(this.buffer);
@@ -421,6 +431,9 @@ class MemberEditor {
 
 	private sort(list: CrewMember[]) {
 
+		if (!list) return;
+		if (list.length == 0 || list.length == 1) return;
+
 		let ageGroups = ["U15", "U16", "U17", "U18"];
 
 		list.sort((a: CrewMember, b: CrewMember) => {
@@ -447,7 +460,7 @@ class MemberEditor {
 	 * 
 	 * allows for persistent data usage
 	 */
-	private save() {
+	save() {
 		this.sort(this.data);
 
 		localStorage.setItem("crewMembers", btoa(JSON.stringify(this.data)));
@@ -460,12 +473,14 @@ class MemberEditor {
 	 * 
 	 * if there is no data to load, it initialises the data array to an empty array
 	 */
-	private load() {
+	load() {
 		if (localStorage.getItem('crewMembers') != null) {
 			this.data = JSON.parse(atob(localStorage.getItem('crewMembers')!));
 		} else {
 			this.data = [];
 		}
+
+		// console.log(this.data);
 
 		this.save();
 	}
@@ -476,6 +491,8 @@ class MemberEditor {
 	 */
 	insertDataIntoTable() {
 		this.clearTable();
+
+		if (this.data == [] || this.data == undefined) return;
 
 		this.data.forEach((val: CrewMember, i: number) => {
 			let row = this.table.insertRow();

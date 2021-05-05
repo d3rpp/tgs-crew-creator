@@ -23,122 +23,118 @@ class CrewEditor {
 	 * @param querySelector The css selector for the point for which this should attach to
 	 */
 	constructor(querySelector: string) {
-		try {
-			this.mainPoint = document.querySelector(querySelector)!;
-			this.table = this.mainPoint.querySelector("table")!;
-			this.editor = this.mainPoint.querySelector(".editor")!;
-			this.fab = this.mainPoint.querySelector("div.fab")!;
-			this.fabSelect = this.mainPoint.querySelector("div.selector")!;
+		this.mainPoint = document.querySelector(querySelector)!;
+		this.table = this.mainPoint.querySelector("table")!;
+		this.editor = this.mainPoint.querySelector(".editor")!;
+		this.fab = this.mainPoint.querySelector("div.fab")!;
+		this.fabSelect = this.mainPoint.querySelector("div.selector")!;
 
-			this.fabSelectButtons = [
-				this.fabSelect.querySelector(".single")!,
-				this.fabSelect.querySelector(".double")!,
-				this.fabSelect.querySelector(".coxless-quad")!,
-				this.fabSelect.querySelector(".coxed-quad")!,
-				this.fabSelect.querySelector(".octi")!
-			];
+		this.fabSelectButtons = [
+			this.fabSelect.querySelector(".single")!,
+			this.fabSelect.querySelector(".double")!,
+			this.fabSelect.querySelector(".coxless-quad")!,
+			this.fabSelect.querySelector(".coxed-quad")!,
+			this.fabSelect.querySelector(".octi")!
+		];
 
-			// this.crews = [];
-			this.loadCrewMembers();
-			this.loadAllCrews();
+		// this.crews = [];
+		this.loadCrewMembers();
+		this.loadAllCrews();
 
-			if (this.crews.length <= 0) {
-				this.editor.innerHTML = `
+		if (this.crews.length <= 0) {
+			this.editor.innerHTML = `
 					<div class="empty-container">
 						<h1 class="empty">Click the + to make a crew</h1>
 					</div>
 				`
-			} else {
+		} else {
+			this.renderAllCrews();
+		}
+
+		this.editor.addEventListener('returningCrewMember', () => {
+
+			this.removeMemberFromUsedList(parseInt(window.sessionStorage.getItem("returningCrewMember")!));
+
+			window.sessionStorage.removeItem("returningCrewMember");
+		});
+
+		// this.editor.addEventListener('returningCrewMembers', () => {
+		// 	window.sessionStorage.getItem("returningMembers").split(',').forEach((val) => { this.removeMemberFromUsedList(parseInt(val)) });
+		// 	window.sessionStorage.removeItem('reurningMembers');
+		// });
+
+		this.editor.addEventListener("acceptedCrewMember", () => {
+			this.addMemberToUsedList(parseInt(window.sessionStorage.getItem("acceptedCrewMember")!));
+
+			window.sessionStorage.removeItem("acceptedCrewMember")
+		});
+
+		this.editor.addEventListener("save", () => {
+			this.saveAllCrews();
+		});
+
+		this.editor.addEventListener("delete", () => {
+
+			this.deleteCrew(parseInt(window.sessionStorage.getItem("crewToDelete")));
+
+			window.sessionStorage.removeItem("crewToDelete");
+			this.saveAllCrews();
+			this.renderAllCrews();
+			this.insertDataIntoTable();
+		})
+
+		window.addEventListener('crewMembersEdited', () => {
+			this.loadCrewMembers();
+		});
+
+		this.fabSelectButtons.forEach((val: HTMLElement, index: number) => {
+			val.onclick = () => {
+				let buttonCrewSizeValue: BoatSize;
+				let coxed: boolean = false;
+				switch (index) {
+					case 0:
+						buttonCrewSizeValue = 1;
+						break;
+					case 1:
+						buttonCrewSizeValue = 2;
+						break;
+					case 2:
+						buttonCrewSizeValue = 4;
+						break;
+					case 3:
+						buttonCrewSizeValue = 4;
+						coxed = true;
+						break
+					case 4:
+						buttonCrewSizeValue = 8;
+						coxed = true;
+						break;
+					default:
+						break;
+				}
+
+				if (buttonCrewSizeValue == undefined) return;
+
+				this.crews.push(new CrewEditorItem({ parent: this.editor, config: { size: buttonCrewSizeValue, coxed: coxed } }));
+				this.saveAllCrews();
 				this.renderAllCrews();
 			}
+		});
 
-			this.editor.addEventListener('returningCrewMember', () => {
+		this.fab.addEventListener('click', () => {
 
-				this.removeMemberFromUsedList(parseInt(window.sessionStorage.getItem("returningCrewMember")!));
-
-				window.sessionStorage.removeItem("returningCrewMember");
-			});
-
-			// this.editor.addEventListener('returningCrewMembers', () => {
-			// 	window.sessionStorage.getItem("returningMembers").split(',').forEach((val) => { this.removeMemberFromUsedList(parseInt(val)) });
-			// 	window.sessionStorage.removeItem('reurningMembers');
-			// });
-
-			this.editor.addEventListener("acceptedCrewMember", () => {
-				this.addMemberToUsedList(parseInt(window.sessionStorage.getItem("acceptedCrewMember")!));
-
-				window.sessionStorage.removeItem("acceptedCrewMember")
-			});
-
-			this.editor.addEventListener("save", () => {
-				this.saveAllCrews();
-			});
-
-			this.editor.addEventListener("delete", () => {
-
-				this.deleteCrew(parseInt(window.sessionStorage.getItem("crewToDelete")));
-
-				window.sessionStorage.removeItem("crewToDelete");
-				this.saveAllCrews();
-				this.renderAllCrews();
-				this.insertDataIntoTable();
-			})
-
-			window.addEventListener('crewMembersEdited', () => {
-				this.loadCrewMembers();
-			});
-
-			this.fabSelectButtons.forEach((val: HTMLElement, index: number) => {
-				val.onclick = () => {
-					let buttonCrewSizeValue: BoatSize;
-					let coxed: boolean = false;
-					switch (index) {
-						case 0:
-							buttonCrewSizeValue = 1;
-							break;
-						case 1:
-							buttonCrewSizeValue = 2;
-							break;
-						case 2:
-							buttonCrewSizeValue = 4;
-							break;
-						case 3:
-							buttonCrewSizeValue = 4;
-							coxed = true;
-							break
-						case 4:
-							buttonCrewSizeValue = 8;
-							coxed = true;
-							break;
-						default:
-							break;
-					}
-
-					if (buttonCrewSizeValue == undefined) return;
-
-					this.crews.push(new CrewEditorItem({ parent: this.editor, config: { size: buttonCrewSizeValue, coxed: coxed } }));
-					this.saveAllCrews();
-					this.renderAllCrews();
-				}
-			});
-
-			this.fab.addEventListener('click', () => {
-
-				if (this.fab.innerHTML == "+") {
-					this.fabSelect.classList.toggle('hidden', false);
-					this.fab.innerHTML = "-"
-				} else {
-					this.fabSelect.classList.toggle('hidden', true);
-					this.fab.innerHTML = "+"
-				}
-			});
+			if (this.fab.innerHTML == "+") {
+				this.fabSelect.classList.toggle('hidden', false);
+				this.fab.innerHTML = "-"
+			} else {
+				this.fabSelect.classList.toggle('hidden', true);
+				this.fab.innerHTML = "+"
+			}
+		});
 
 
-			console.info("Crew Editor: Initialised Successfully")
-		} catch (e) {
-			console.error(e);
-			throw new Error("Crew Editor: An Error Occured");
-		}
+		console.info("Crew Editor: Initialised Successfully")
+
 	}
 
 	/**
@@ -362,7 +358,7 @@ class CrewEditor {
 		let filtered: CrewMember[] = [];
 
 		this.crewMembers.forEach((member: CrewMember) => {
-			if (!this.usedCrewMembers.includes(member.id.toString())) {
+			if (!this.usedCrewMembers.includes(`${member.id}`)) {
 				filtered.push(member);
 			}
 		})
@@ -376,7 +372,7 @@ class CrewEditor {
 			let val = filtered[i];
 
 			// if (val == undefined) return;
-			if (this.usedCrewMembers.includes(val.id.toString())) {
+			if (this.usedCrewMembers.includes(`${val.id}`)) {
 				// console.info(val, "CONTAINS", val.id);
 			} else {
 				let row = this.table.insertRow();
@@ -395,7 +391,7 @@ class CrewEditor {
 				`);
 
 				row.setAttribute("draggable", "true");
-				row.setAttribute("data-id", val.id.toString());
+				row.setAttribute("data-id", `${val.id}`);
 				// row.setAttribute("data-index", i.toString());
 
 				// row.ondragstart = (ev:DragEvent) => {

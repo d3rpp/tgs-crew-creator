@@ -614,6 +614,8 @@ class CrewEditorItem {
 					return;
 				}
 
+				console.log(member);
+
 				val.setAttribute("data-id", member.id.toString());
 				val.setAttribute("data-age-group", member.ageGroup);
 				val.setAttribute("data-name", member.name);

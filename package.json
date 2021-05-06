@@ -3,7 +3,7 @@
     "watch": "rm -rf ./dist/*; parcel watch ./src/index.html --public-url .",
     "build": "rm -rf ./dist/*; parcel build ./src/index.html --public-url .",
     "serve": "rm -rf ./dist/*; parcel serve ./src/index.html --public-url .",
-    "server": "cd dist;echo serving on http://0.0.0.0:1234 ;php -S 0.0.0.0:1234 >& /dev/null",
+    "server": "cd dist;echo serving on http://0.0.0.0:42069 ;php -S 0.0.0.0:42069 >& /dev/null",
     "test": "jest"
   },
   "devDependencies": {

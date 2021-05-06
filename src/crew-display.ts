@@ -26,7 +26,13 @@ class CrewDisplay {
 	}
 
 	private loadCrews() {
-		if (JSON.parse(atob(window.localStorage.getItem("crews"))) as CrewEditorSerialised[] == [] || JSON.parse(atob(window.localStorage.getItem("crews"))) as CrewEditorSerialised[] == undefined || JSON.parse(atob(window.localStorage.getItem("crews"))) as CrewEditorSerialised[] == null) return;
+		try {
+			if (JSON.parse(atob(window.localStorage.getItem("crews"))) as CrewEditorSerialised[] == [] || JSON.parse(atob(window.localStorage.getItem("crews"))) as CrewEditorSerialised[] == undefined || JSON.parse(atob(window.localStorage.getItem("crews"))) as CrewEditorSerialised[] == null) return;
+		} catch (e) {
+			// console.error(e);
+			return;
+		}
+
 		this.crews = JSON.parse(atob(window.localStorage.getItem("crews"))) as CrewEditorSerialised[];
 
 	}
@@ -39,9 +45,13 @@ class CrewDisplay {
 		this.mainPoint.innerHTML = `<div class="container"></div>`;
 		let container = this.mainPoint.querySelector(".container");
 
-		this.crews.forEach((val: CrewEditorSerialised) => {
-			this.items.push(new CrewDisplayItem(val));
-		});
+		try {
+			this.crews.forEach((val: CrewEditorSerialised) => {
+				this.items.push(new CrewDisplayItem(val));
+			});
+		} catch (e) {
+			return;
+		}
 
 		this.items.forEach((val: CrewDisplayItem) => {
 			container.appendChild(val.render());

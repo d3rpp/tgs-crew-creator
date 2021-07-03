@@ -1,4 +1,3 @@
-import { isLabeledStatement, transpileModule } from "typescript";
 import { AgeGroup, CrewMember, CrewMemberInterface, Gender } from "./types";
 
 type Validation = "name" | "gender" | "ageGroup" | undefined;
@@ -113,19 +112,19 @@ class MemberEditor {
 			this.submitButton = this.editor.querySelector(".buttons button.submit")!;
 			this.submitButton.addEventListener('mouseup', () => {
 				if (!this.confirmAndSubmitDataFromForm()) {
-					alert("There was an error" + this._val);
+					alert("There was an error: " + this._val);
 				}
 				// this.buffer = {};
-				this.resetBuffer();
-				this.updateViewer();
+				// this.resetBuffer();
+				// this.updateViewer();
 			});
 		} catch (error) {
 			throw new Error("Member Editor: Element(s) missing");
 		}
 
 		try {
-			if (localStorage.getItem('crewMembers') == null) {
-				// this.initTestData();
+			if (window.localStorage.getItem('crewMembers') == null) {
+				// this.initTestData();	
 				this.data = [];
 				this.save();
 			} else {
@@ -474,15 +473,25 @@ class MemberEditor {
 	 * if there is no data to load, it initialises the data array to an empty array
 	 */
 	load() {
-		if (localStorage.getItem('crewMembers') != null) {
-			this.data = JSON.parse(atob(localStorage.getItem('crewMembers')!));
-		} else {
-			this.data = [];
+		// if (localStorage.getItem('crewMembers') != null) {
+		// 	this.data = JSON.parse(atob(localStorage.getItem('crewMembers')!));
+		// } else {
+		// 	this.data = [];
+		// }
+
+		// // console.log(this.data);
+
+		// this.save();
+
+		let xhr = new XMLHttpRequest();
+
+		xhr.onreadystatechange = () => {
+			if (xhr.readyState == 4 && xhr.status == 200) {
+
+			}
 		}
 
-		// console.log(this.data);
-
-		this.save();
+		xhr.open("GET", "/api/");
 	}
 
 	/**

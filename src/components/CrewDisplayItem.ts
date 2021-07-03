@@ -158,19 +158,6 @@ export class CrewDisplayItem {
 
 				${(this.size == 2 || this.size == 4 || this.size == 8) && this.coxed ? `
 					<div 
-					${!!this.crew.seats[this.size - 2] ? `
-						data-id="${this.crew.seats[this.size - 2].id}" 
-						data-name="${this.crew.seats[this.size - 2].name}"
-						data-novice="${this.crew.seats[this.size - 2].novice ? "true" : "false"}"
-						data-age-group="${this.crew.seats[this.size - 2].ageGroup}
-						data-gender="${this.crew.seats[this.size - 2].gender}"
-					` : ``}>
-					${this.crew.seats[this.size - 2] ? `${this.crew.seats[this.size - 2].name}` : ``}
-				</div>
-				` : ``}
-
-				${(this.size == 2 || this.size == 4 || this.size == 8) && !this.coxed ? `
-					<div 
 					${!!this.crew.seats[this.size - 1] ? `
 						data-id="${this.crew.seats[this.size - 1].id}" 
 						data-name="${this.crew.seats[this.size - 1].name}"
@@ -180,21 +167,25 @@ export class CrewDisplayItem {
 					` : ``}>
 					${this.crew.seats[this.size - 1] ? `${this.crew.seats[this.size - 1].name}` : ``}
 				</div>
+
 				` : ``}
+
+				${(this.coxed) ? `
+								<div
+					${!!this.crew.seats[this.size] ? `
+						data-id="${this.crew.seats[this.size].id}" 
+						data-name="${this.crew.seats[this.size].name}"
+						data-novice="${this.crew.seats[this.size].novice ? "true" : "false"}"
+						data-age-group="${this.crew.seats[this.size].ageGroup}
+						data-gender="${this.crew.seats[this.size].gender}"
+					` : ``}>
+					${this.crew.seats[this.size] ? `${this.crew.seats[this.size].name}` : ``}
+				</div>`: ``}
 
 
 				${this.coxed ? `<div class="separator"> - </div>
 				
-					<div 
-					${!!this.crew.seats[this.size - 1] ? `
-						data-id="${this.crew.seats[this.size - 1].id}" 
-						data-name="${this.crew.seats[this.size - 1].name}"
-						data-novice="${this.crew.seats[this.size - 1].novice ? "true" : "false"}"
-						data-age-group="${this.crew.seats[this.size - 1].ageGroup}
-						data-gender="${this.crew.seats[this.size - 1].gender}"
-					` : ``}>
-					${this.crew.seats[this.size - 1] ? `${this.crew.seats[this.size - 1].name}` : ``}
-				</div>
+					
 				` : ``}
 				</div>
 

@@ -21,7 +21,7 @@ add a `-g` flag at the end to install this globally.
 
 In order to compile it in watch mode, open a terminal or command prompt and run 
 ```bash
-npm run watch
+npm run dev
 ```
 
 **note**

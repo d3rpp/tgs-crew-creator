@@ -1,15 +1,13 @@
 import { MemberEditor } from './member-editor';
-import { CrewEditor } from "./crew-editor";
-import { CrewDisplay } from "./crew-display";
+import { CrewEditor } from './crew-editor';
+import { CrewDisplay } from './crew-display';
 
 interface Route {
 	path: string | RegExp;
 	callback: Function;
 }
 
-type RouterMode =
-	'hash' |
-	'history';
+type RouterMode = 'hash' | 'history';
 
 interface RouterOptions {
 	mode: RouterMode;
@@ -25,13 +23,13 @@ class Router {
 
 	/**
 	 * Holds the mode of the router
-	 * 
+	 *
 	 */
-	mode: RouterMode = "hash";
+	mode: RouterMode = 'hash';
 
 	/**
 	 * Root URL, change if this is in a sub-page
-	 * 
+	 *
 	 */
 	root: string = '/';
 
@@ -40,11 +38,10 @@ class Router {
 	 */
 	globalInterval: number | undefined;
 
-
 	/**
 	 * Holds the Current path in memory
 	 */
-	current: string = "";
+	current: string = '';
 
 	/**
 	 * Initialises the Router Object
@@ -91,20 +88,20 @@ class Router {
 	 * This is an internal parser function
 	 */
 	clearSlashes = (path: string) =>
-		path
-			.toString()
-			.replace(/\/$/, '')
-			.replace(/^\//, '');
+		path.toString().replace(/\/$/, '').replace(/^\//, '');
 
 	/**
 	 * get URL fragment, (the "about" or  "")
 	 */
 	getFragment = (): string => {
 		let fragment = '';
-		if (this.mode === "history") {
-			fragment = this.clearSlashes(decodeURI(window.location.pathname + window.location.search));
+		if (this.mode === 'history') {
+			fragment = this.clearSlashes(
+				decodeURI(window.location.pathname + window.location.search)
+			);
 			fragment = fragment.replace(/\?(.*)$/, '');
-			fragment = this.root !== '/' ? fragment.replace(this.root, '') : fragment;
+			fragment =
+				this.root !== '/' ? fragment.replace(this.root, '') : fragment;
 		} else {
 			const match = window.location.href.match(/#(.*)$/);
 			fragment = match ? match[1] : '';
@@ -116,10 +113,17 @@ class Router {
 	 * Change Page
 	 */
 	navigate = (path = '') => {
-		if (this.mode === "history") {
-			window.history.pushState(null, "", this.root + this.clearSlashes(path));
+		if (this.mode === 'history') {
+			window.history.pushState(
+				null,
+				'',
+				this.root + this.clearSlashes(path)
+			);
 		} else {
-			window.location.href = `${window.location.href.replace(/#(.*)$/, '')}#${path}`;
+			window.location.href = `${window.location.href.replace(
+				/#(.*)$/,
+				''
+			)}#${path}`;
 		}
 		this.current == path;
 		return this;
@@ -141,7 +145,7 @@ class Router {
 		if (this.current === this.getFragment()) return;
 		this.current = this.getFragment();
 
-		this.routes.some(route => {
+		this.routes.some((route) => {
 			const match = this.current.match(route.path);
 			if (match) {
 				match.shift();
@@ -156,8 +160,12 @@ class Router {
 /**
  * Navigate between pages
  */
-function navigateClass(pathClass: string, wrapper: HTMLElement, indicator: HTMLElement, updateCallback?: Function) {
-
+function navigateClass(
+	pathClass: string,
+	wrapper: HTMLElement,
+	indicator: HTMLElement,
+	updateCallback?: Function
+) {
 	// const pagesById = [
 	// 	document.querySelector("#crew-display"),
 	// 	document.querySelector("#crew-editor"),
@@ -166,8 +174,8 @@ function navigateClass(pathClass: string, wrapper: HTMLElement, indicator: HTMLE
 
 	if (pathClass == activeRouteClass) return;
 
-	wrapper.classList.remove("member-editor", "crew-editor", "crew-display");
-	indicator.classList.remove("member-editor", "crew-editor", "crew-display");
+	wrapper.classList.remove('member-editor', 'crew-editor', 'crew-display');
+	indicator.classList.remove('member-editor', 'crew-editor', 'crew-display');
 
 	wrapper.classList.add(pathClass);
 	indicator.classList.add(pathClass);
@@ -194,8 +202,6 @@ var memberEditor: MemberEditor;
 var crewEditor: CrewEditor;
 var crewDisplay: CrewDisplay;
 
-
-
 /**
  * Initialises everything,
  * in a brittish way tho
@@ -209,38 +215,49 @@ const innit = (): void => {
 	// window.onstorage = (() => { console.info(window.localStorage) });
 
 	try {
-		main = document.querySelector("main.wrapper")!;
-		indicator = document.querySelector("span#indicator")!;
+		main = document.querySelector('main.wrapper')!;
+		indicator = document.querySelector('span#indicator')!;
 
 		if (main == null || indicator == null) {
-			throw new Error("Good Job Retard");
+			throw new Error('Good Job Retard');
 		}
 	} catch (error: any) {
 		// insult me, the only person using this code for being retarded and not setting up the DOM properly
-		console.error("You did it wrong, your IQ is: " + Math.floor(Math.random() * -100));
+		console.error(
+			'You did it wrong, your IQ is: ' + Math.floor(Math.random() * -100)
+		);
 		console.error({ error });
 		// also prevents anything from working
 		return;
 	}
 
 	try {
-		memberEditor = new MemberEditor(".page#member-editor");
-		crewEditor = new CrewEditor(".page#crew-editor");
-		crewDisplay = new CrewDisplay(".page#crew-display");
+		memberEditor = new MemberEditor('.page#member-editor');
+		crewEditor = new CrewEditor('.page#crew-editor');
+		crewDisplay = new CrewDisplay('.page#crew-display');
 	} catch (error) {
-		console.error("An Error Occured", error);
+		console.error('An Error Occured', error);
 	}
 
-
 	// create router instance
-	router = new Router({ mode: 'hash', root: '/' },
-		[
-			{ path: 'member-editor', callback: () => navigateClass('member-editor', main, indicator) },
-			{ path: 'crew-editor', callback: () => navigateClass('crew-editor', main, indicator) },
-			{ path: 'crew-display', callback: () => navigateClass('crew-display', main, indicator) },
-			{ path: '', callback: () => navigateClass('member-editor', main, indicator) }
-		]
-	);
+	router = new Router({ mode: 'hash', root: '/' }, [
+		{
+			path: 'member-editor',
+			callback: () => navigateClass('member-editor', main, indicator),
+		},
+		{
+			path: 'crew-editor',
+			callback: () => navigateClass('crew-editor', main, indicator),
+		},
+		{
+			path: 'crew-display',
+			callback: () => navigateClass('crew-display', main, indicator),
+		},
+		{
+			path: '',
+			callback: () => navigateClass('member-editor', main, indicator),
+		},
+	]);
 
 	// if (!('ontouchstart' in document.documentElement)) {
 	// 	// Quality of Life Feature
@@ -265,8 +282,7 @@ const innit = (): void => {
 	// 		}
 	// 	}
 	// }
-
-}
+};
 
 /**
  * Starting Point of javascript program
